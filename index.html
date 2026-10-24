@@ -828,6 +828,9 @@
             }
         }
 
+        // Prevent repeated settings requests if the settings table has a missing/empty id.
+        let settingsFetchStarted = false;
+
         // --- 4. ROUTER ---
         async function router() {
             try {
@@ -855,9 +858,16 @@
                     if(!APP_STATE.settings.id && supabase) await fetchSettings(); 
                 }
 
-                // 3. UI Loading
-                appContent.innerHTML = '<div class="flex-grow flex justify-center items-center w-full h-[60vh]"><div class="loader"></div></div>';
+                // 3. Render loading immediately. Network requests must never block the UI.
+                appContent.innerHTML = '<div class="flex-grow flex justify-center items-center w-full h-[60vh]"><div class="loader" role="status" aria-label="Memuat halaman"></div></div>';
                 window.scrollTo(0, 0);
+
+                // Load settings in the background; never await this before rendering the page.
+                // A slow Supabase connection must not leave the entire main area blank.
+                if (baseHash !== '#admin' && supabase && !settingsFetchStarted) {
+                    settingsFetchStarted = true;
+                    void fetchSettings();
+                }
 
                 // 4. Routing
                 if (baseHash === '#home') {
@@ -1576,10 +1586,17 @@
         }
         window.navigateToAdmin = navigateToAdmin;
 
-        // Listen to direct hash navigation, Back/Forward and initial page load.
+        // Listen to direct hash navigation and Back/Forward.
         window.addEventListener('hashchange', () => { void router(); });
         window.addEventListener('popstate', () => { void router(); });
-        window.addEventListener('DOMContentLoaded', () => { void router(); });
+
+        // Start reliably whether this script runs before or after DOMContentLoaded.
+        const startTokoAnggunApp = () => { void router(); };
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', startTokoAnggunApp, { once: true });
+        } else {
+            startTokoAnggunApp();
+        }
     </script>
 </body>
 </html>
