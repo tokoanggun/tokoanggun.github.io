@@ -17,8 +17,8 @@ Frontend menggunakan publishable key yang memang dirancang untuk browser. Jangan
 1. Buka Supabase Dashboard → Authentication → Users.
 2. Buat user menggunakan email yang kamu kuasai. Jangan mengaktifkan pendaftaran publik untuk membuat admin.
 3. Buka SQL Editor lalu jalankan `supabase/admin-bootstrap.sql` setelah mengganti `GANTI_DENGAN_EMAIL_ADMIN` dengan email akun tersebut.
-4. Masuk ke website pada route `#admin`.
-5. Isi nomor WhatsApp bisnis yang benar di Pengaturan Website.
+4. Buka https://tokoanggun.github.io/ lalu klik **Admin** di header atau **Dashboard Admin** di footer.
+5. Nomor WhatsApp utama sudah diatur ke **+62 856-4345-4205**. Nomor juga dapat diklik dari footer.
 6. Tambahkan katalog pertama. Tiap item dapat memiliki template WhatsApp sendiri.
 
 ## Deploy
@@ -33,9 +33,9 @@ Repository ini bernama `tokoanggun.github.io`, sehingga menggunakan GitHub Pages
 ## Checklist setelah deploy
 - Pastikan GitHub Pages workflow sukses.
 - Setelah membuat akun admin, masukkan user ke `public.admin_users` melalui SQL bootstrap.
-- Isi nomor WhatsApp bisnis.
+- Nomor WhatsApp sudah dikonfigurasi; uji pesan dari halaman utama dan detail produk.
 - Uji login admin, tambah/edit/hapus item, upload foto, dan pesan WhatsApp dari halaman detail.
 - Verifikasi URL redirect Supabase Auth sesuai alamat Pages yang akhirnya digunakan.
 
 ## Catatan
-Katalog awal masih kosong hingga admin menambahkan produk atau jasa. Nomor WhatsApp asli belum diatur supaya nomor contoh tidak dipakai untuk menerima pesanan.
+Katalog awal masih kosong hingga admin menambahkan produk atau jasa. Nomor WhatsApp bisnis sudah disimpan di Supabase. Supabase saat ini belum memiliki akun Auth/admin; buat akun pada Authentication → Users, lalu jalankan `supabase/admin-bootstrap.sql` dengan email akun tersebut agar dapat masuk ke dashboard.
