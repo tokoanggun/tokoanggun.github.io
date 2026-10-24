@@ -670,7 +670,7 @@
         // ⚠️ PENTING: Ganti tulisan YOUR_SUPABASE_ANON_KEY di bawah dengan API Key Anda!
         const SUPABASE_KEY = 'sb_publishable_QBTbWX_v2OcDtwgrPRj8xw_0lyG9apI'; 
         
-        let supabase = null;
+        let supabaseClient = null;
         try {
             if (!window.supabase || typeof window.supabase.createClient !== 'function') {
                 throw new Error('Pustaka Supabase belum berhasil dimuat. Periksa koneksi internet atau CDN.');
@@ -678,7 +678,7 @@
             if (!SUPABASE_KEY || SUPABASE_KEY === 'YOUR_SUPABASE_ANON_KEY') {
                 throw new Error('Publishable key Supabase belum dikonfigurasi.');
             }
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         } catch (error) {
             console.error('Gagal menginisialisasi Supabase:', error);
         }
@@ -753,9 +753,9 @@
 
         // --- 3. DATA FETCHING (SAFE) ---
         async function fetchSettings() {
-            if (supabase) {
+            if (supabaseClient) {
                 try {
-                    const { data, error } = await supabase.from('settings').select('*').limit(1).maybeSingle();
+                    const { data, error } = await supabaseClient.from('settings').select('*').limit(1).maybeSingle();
                     if (error) throw error;
                     if (data) APP_STATE.settings = { ...APP_STATE.settings, ...data };
                 } catch (error) {
@@ -776,12 +776,12 @@
         }
 
                 async function fetchProducts(isAdmin = false) {
-            if (!supabase) {
+            if (!supabaseClient) {
                 console.warn("Supabase tidak aktif. Pastikan API Key diisi.");
                 return [];
             }
             try {
-                let query = supabase.from('products').select('*').order('sort_order', { ascending: true }).order('created_at', { ascending: false });
+                let query = supabaseClient.from('products').select('*').order('sort_order', { ascending: true }).order('created_at', { ascending: false });
                 if (!isAdmin) query = query.eq('is_active', true);
                 
                 const { data, error } = await query;
@@ -801,18 +801,18 @@
         }
 
         async function checkAuth() {
-            if (!supabase) return null;
+            if (!supabaseClient) return null;
             try {
-                const { data: { session } } = await supabase.auth.getSession();
+                const { data: { session } } = await supabaseClient.auth.getSession();
                 APP_STATE.user = session?.user || null;
                 return APP_STATE.user;
             } catch (e) { return null; }
         }
 
         async function hasAdminAccess(user = APP_STATE.user) {
-            if (!supabase || !user?.id) return false;
+            if (!supabaseClient || !user?.id) return false;
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('admin_users')
                     .select('user_id')
                     .eq('user_id', user.id)
@@ -863,7 +863,7 @@
 
                 // Load settings in the background; never await this before rendering the page.
                 // A slow Supabase connection must not leave the entire main area blank.
-                if (baseHash !== '#admin' && supabase && !settingsFetchStarted) {
+                if (baseHash !== '#admin' && supabaseClient && !settingsFetchStarted) {
                     settingsFetchStarted = true;
                     void fetchSettings();
                 }
@@ -885,7 +885,7 @@
                     } else if (await hasAdminAccess(user)) {
                         await renderAdminDashboard(appContent);
                     } else {
-                        try { await supabase?.auth.signOut(); } catch (signOutError) { console.warn('Tidak dapat menutup sesi non-admin.', signOutError); }
+                        try { await supabaseClient?.auth.signOut(); } catch (signOutError) { console.warn('Tidak dapat menutup sesi non-admin.', signOutError); }
                         APP_STATE.user = null;
                         await renderAdminLogin(appContent);
                         const errDiv = document.getElementById('login-error');
@@ -1222,7 +1222,7 @@
             const errDiv = document.getElementById('login-error');
             const errTxt = document.getElementById('login-error-text');
 
-            if (!supabase) {
+            if (!supabaseClient) {
                 if (errTxt) errTxt.textContent = 'Koneksi Supabase belum siap. Muat ulang halaman atau periksa konfigurasi API.';
                 if (errDiv) errDiv.classList.remove('hidden');
                 if (btn) btn.disabled = true;
@@ -1230,7 +1230,7 @@
 
             form?.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                if (!supabase) {
+                if (!supabaseClient) {
                     if (errTxt) errTxt.textContent = 'Koneksi Supabase belum siap. Periksa jaringan atau konfigurasi Supabase.';
                     if (errDiv) errDiv.classList.remove('hidden');
                     return;
@@ -1243,12 +1243,12 @@
                 if (errDiv) errDiv.classList.add('hidden');
 
                 try {
-                    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                     if (error) throw error;
 
                     const allowed = await hasAdminAccess(data.user);
                     if (!allowed) {
-                        await supabase.auth.signOut();
+                        await supabaseClient.auth.signOut();
                         APP_STATE.user = null;
                         throw new Error('Email atau akun ini belum terdaftar sebagai admin. Tambahkan user yang benar ke public.admin_users.');
                     }
@@ -1267,8 +1267,8 @@
         }
 
                 async function handleLogout() {
-            if(!supabase) return;
-            await supabase.auth.signOut();
+            if(!supabaseClient) return;
+            await supabaseClient.auth.signOut();
             APP_STATE.user = null;
             showToast('Berhasil logout');
             window.location.hash = '#home';
@@ -1320,7 +1320,7 @@
                 document.getElementById('admin-email-display').innerText = APP_STATE.user.email;
             }
 
-            if(!APP_STATE.settings.id && supabase) await fetchSettings();
+            if(!APP_STATE.settings.id && supabaseClient) await fetchSettings();
             
             if(document.getElementById('set-wa')) {
                 document.getElementById('set-wa').value = APP_STATE.settings.whatsapp_number || '';
@@ -1340,8 +1340,8 @@
 
                 try {
                     const { error } = APP_STATE.settings.id 
-                        ? await supabase.from('settings').update(payload).eq('id', APP_STATE.settings.id)
-                        : await supabase.from('settings').insert([payload]);
+                        ? await supabaseClient.from('settings').update(payload).eq('id', APP_STATE.settings.id)
+                        : await supabaseClient.from('settings').insert([payload]);
                     
                     if(error) throw error;
                     showToast('Pengaturan disimpan!');
@@ -1522,10 +1522,10 @@
                     const fileExt = file.name.split('.').pop();
                     const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
                     
-                    const { error: uploadError } = await supabase.storage.from('product-images').upload(fileName, file);
+                    const { error: uploadError } = await supabaseClient.storage.from('product-images').upload(fileName, file);
                     if (uploadError) throw uploadError;
                     
-                    const { data: { publicUrl } } = supabase.storage.from('product-images').getPublicUrl(fileName);
+                    const { data: { publicUrl } } = supabaseClient.storage.from('product-images').getPublicUrl(fileName);
                     imageUrl = publicUrl;
                 }
 
@@ -1544,10 +1544,10 @@
 
                 let resError;
                 if (id) {
-                    const { error } = await supabase.from('products').update(payload).eq('id', id);
+                    const { error } = await supabaseClient.from('products').update(payload).eq('id', id);
                     resError = error;
                 } else {
-                    const { error } = await supabase.from('products').insert([payload]);
+                    const { error } = await supabaseClient.from('products').insert([payload]);
                     resError = error;
                 }
 
@@ -1568,7 +1568,7 @@
         async function deleteProduct(id) {
             if(!confirm('Yakin ingin menghapus produk ini? Tindakan ini tidak bisa dibatalkan.')) return;
             try {
-                const { error } = await supabase.from('products').delete().eq('id', id);
+                const { error } = await supabaseClient.from('products').delete().eq('id', id);
                 if (error) throw error;
                 showToast('Produk dihapus');
                 await refreshAdminTable();
