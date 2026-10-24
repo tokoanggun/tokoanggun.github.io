@@ -24,10 +24,11 @@ Frontend menggunakan publishable key yang memang dirancang untuk browser. Jangan
 ## Deploy
 Workflow GitHub Actions menerbitkan `index.html` dari branch `main` ke GitHub Pages setiap kali ada push.
 
-Saat repository bernama `tokoanggun`, project site biasanya ada di:
-https://tokoanggun.github.io/tokoanggun/
+## Alamat website
+Website utama diterbitkan ke:
+https://tokoanggun.github.io/
 
-Agar alamat menjadi persis https://tokoanggun.github.io/, repository harus bernama `tokoanggun.github.io` pada akun pemilik `tokoanggun` (profile/organization Pages site).
+Repository ini bernama `tokoanggun.github.io`, sehingga menggunakan GitHub Pages user site.
 
 ## Checklist setelah deploy
 - Pastikan GitHub Pages workflow sukses.
