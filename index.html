@@ -855,7 +855,6 @@
                     if (navbar) navbar.style.display = 'block';
                     if (footer) footer.style.display = 'block';
                     document.body.style.backgroundColor = '#FBF7F1';
-                    if(!APP_STATE.settings.id && supabase) await fetchSettings(); 
                 }
 
                 // 3. Render loading immediately. Network requests must never block the UI.
