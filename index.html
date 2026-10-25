@@ -136,6 +136,132 @@
             #navbar .max-w-7xl > div > .flex.items-center.gap-3 { gap: .2rem; }
         }
 
+
+        /* Center stacked layouts on mobile/tablet while keeping long-form text easy to read */
+        @media (max-width: 1023px) {
+            /* These sections become single-column before desktop width, so center their presentation. */
+            #app-content #tentang .grid > div {
+                text-align: center;
+            }
+            #app-content #tentang .inline-flex {
+                display: flex;
+                width: fit-content;
+                max-width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+                align-items: center;
+                justify-content: center;
+            }
+            #app-content #tentang .flex.gap-4.items-start {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            #app-content #tentang .mt-8.rounded-2xl {
+                max-width: 46rem;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+            #app-content #tentang .mt-8.rounded-2xl > .flex {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            #app-content section.bg-white.py-20 > div > div:first-child {
+                align-items: center;
+                text-align: center;
+            }
+            #app-content #ulasan article {
+                text-align: center;
+            }
+            #app-content #ulasan article .flex.gap-1 {
+                justify-content: center;
+            }
+            #app-content #kebijakan article > div:first-child {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            #app-content .pt-12.pb-8.border-b > div {
+                text-align: center;
+            }
+            #app-content #category-filters {
+                justify-content: center;
+            }
+            #app-content #home-featured-grid > div > div.p-6,
+            #app-content #catalog-grid > div > div.p-6 {
+                text-align: center;
+            }
+            #app-content #home-featured-grid > div > div.p-6 > .mt-auto.flex.items-end.justify-between,
+            #app-content #catalog-grid > div > div.p-6 > .mt-auto.flex.items-end.justify-between {
+                align-items: center;
+                justify-content: center;
+            }
+            #app-content #detail-content {
+                gap: 1.5rem;
+            }
+            #app-content #detail-content > div:nth-child(2) > h1,
+            #app-content #detail-content > div:nth-child(2) > p.text-3xl {
+                text-align: center;
+            }
+            #app-content #detail-content > div:nth-child(2) > span {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            #app-content #detail-content > div:nth-child(2) > div.mb-8 > h4 {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 767px) {
+            /* Reduce oversized vertical gaps and make content use the available screen width. */
+            #app-content section.py-16,
+            #app-content section.py-20 {
+                padding-top: 3.25rem;
+                padding-bottom: 3.25rem;
+            }
+            #app-content h2 {
+                font-size: clamp(1.65rem, 7.6vw, 2.15rem);
+                line-height: 1.2;
+            }
+            #app-content .pt-12.pb-8 {
+                padding-top: 2.5rem;
+                padding-bottom: 1.75rem;
+            }
+            #app-content #detail-content {
+                padding: 1rem;
+                border-radius: 1.25rem;
+                gap: 1.25rem;
+            }
+            #app-content #detail-content > div:nth-child(2) > div.mb-10 {
+                padding: 1rem;
+            }
+            #app-content nav[aria-label="Breadcrumb"] {
+                overflow-x: auto;
+                max-width: 100%;
+                padding-bottom: .25rem;
+            }
+            #app-content #category-filters {
+                gap: .5rem;
+            }
+            #app-content #category-filters button {
+                padding-left: .85rem;
+                padding-right: .85rem;
+            }
+            #app-content #ulasan article,
+            #app-content #kebijakan article {
+                padding: 1.15rem;
+            }
+            #footer .mt-12.pt-8 {
+                text-align: center;
+            }
+            #footer .mt-12.pt-8 > * {
+                max-width: 100%;
+                overflow-wrap: anywhere;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 scroll-behavior: auto !important;
@@ -160,7 +286,7 @@
                 </a>
                 
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-8">
+                <div class="hidden lg:flex space-x-8">
                     <a href="#home" class="text-dark hover:text-primary transition-colors font-medium">Beranda</a>
                     <a href="#catalog" class="text-dark hover:text-primary transition-colors font-medium">Koleksi</a>
                     <a href="#track-order" class="text-dark hover:text-primary transition-colors font-medium">Cek Pesanan</a>
@@ -171,7 +297,7 @@
                 <!-- Right Actions -->
                 <div class="flex items-center gap-3 md:gap-4">
                     <a href="#catalog" class="text-graytext hover:text-primary transition-colors p-2" aria-label="Cari produk"><i class="ph ph-magnifying-glass text-xl"></i></a>
-                    <a href="#track-order" class="text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Cek status pesanan"><i class="ph ph-package text-xl"></i><span class="hidden sm:inline ml-1">Lacak</span></a>
+                    <a href="#track-order" class="text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Cek status pesanan"><i class="ph ph-package text-xl"></i><span class="hidden lg:inline ml-1">Lacak</span></a>
                     <a href="#cart" class="relative bg-primary hover:bg-primaryHover text-white px-4 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm font-medium text-sm">
                         <i class="ph ph-shopping-cart text-lg"></i><span>Keranjang</span>
                         <span id="cart-count" class="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-white text-primary text-xs font-bold">0</span>
