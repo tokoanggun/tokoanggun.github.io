@@ -92,11 +92,11 @@
 
                 <!-- Right Actions -->
                 <div class="flex items-center gap-3 md:gap-4">
-                    <a href="#catalog" class="text-graytext hover:text-primary transition-colors p-2"><i class="ph ph-magnifying-glass text-xl"></i></a>
-                    <button onclick="openWhatsApp()" class="hidden md:flex bg-primary hover:bg-primaryHover text-white px-6 py-2.5 rounded-full items-center gap-2 transition-all shadow-sm font-medium text-sm">
-                        <i class="ph-fill ph-whatsapp-logo text-lg"></i>
-                        <span>WhatsApp</span>
-                    </button>
+                    <a href="#catalog" class="text-graytext hover:text-primary transition-colors p-2" aria-label="Cari produk"><i class="ph ph-magnifying-glass text-xl"></i></a>
+                    <a href="#cart" class="relative bg-primary hover:bg-primaryHover text-white px-4 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm font-medium text-sm">
+                        <i class="ph ph-shopping-cart text-lg"></i><span>Keranjang</span>
+                        <span id="cart-count" class="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-white text-primary text-xs font-bold">0</span>
+                    </a>
                     <a href="#admin" onclick="navigateToAdmin(event)" class="bg-lightpink text-accent hover:bg-accent hover:text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide transition-colors">Admin</a>
                 </div>
             </div>
@@ -687,6 +687,8 @@
         const APP_STATE = {
             products: [],
             adminProducts: [],
+            cart: (() => { try { const v = JSON.parse(localStorage.getItem('tokoanggun-cart') || '[]'); return Array.isArray(v) ? v : []; } catch (_) { return []; } })(),
+            lastOrder: null,
             settings: {
                 whatsapp_number: '6285643454205',
                 default_wa_message: 'Halo Toko Anggun, saya ingin bertanya mengenai layanan/produk Anda.'
@@ -878,6 +880,10 @@
                     const params = new URLSearchParams(queryParams);
                     const id = params.get('id');
                     await renderDetail(appContent, id);
+                } else if (baseHash === '#cart') {
+                    renderCart(appContent);
+                } else if (baseHash === '#checkout') {
+                    renderCheckout(appContent);
                 } else if (baseHash === '#admin') {
                     const user = await checkAuth();
                     if (!user) {
@@ -992,9 +998,10 @@
                     <div class="mt-auto flex items-end justify-between">
                         <p class="font-bold text-primary text-xl tracking-tight">${formatRupiah(product.price)}</p>
                     </div>
-                    <button class="mt-5 w-full bg-primary text-white group-hover:bg-primaryHover py-3 rounded-xl text-sm font-bold transition-all shadow-md group-hover:shadow-lg">
-                        Lihat Detail
-                    </button>
+                    <div class="grid grid-cols-2 gap-2 mt-5">
+                        <button type="button" onclick="event.stopPropagation(); addToCart('${product.id}')" class="bg-white border border-primary text-primary hover:bg-lightpink py-3 rounded-xl text-xs font-bold transition-all"><i class="ph ph-shopping-cart"></i> Keranjang</button>
+                        <button type="button" onclick="event.stopPropagation(); window.location.hash='#detail?id=${product.id}'" class="bg-primary text-white group-hover:bg-primaryHover py-3 rounded-xl text-xs font-bold transition-all shadow-md">Detail</button>
+                    </div>
                 </div>
             `;
             return div;
@@ -1138,17 +1145,12 @@
                         </div>
                     </div>
                     
-                    <div class="mt-auto flex flex-col gap-4">
+                    <div class="mt-auto flex flex-col gap-3">
                         <button onclick="orderItem('${product.id}')" class="w-full bg-primary hover:bg-primaryHover text-white py-4 rounded-xl text-lg font-bold transition-all shadow-[0_4px_20px_0_rgba(82,109,82,0.4)] flex justify-center items-center gap-3">
-                            <i class="ph-fill ph-whatsapp-logo text-2xl"></i> Pesan lewat WhatsApp
+                            <i class="ph ph-shopping-cart text-2xl"></i> Tambah ke Keranjang
                         </button>
-                        <div class="bg-green-50 rounded-xl p-4 flex items-start gap-3 border border-green-100">
-                            <i class="ph-fill ph-whatsapp-logo text-green-600 text-xl flex-shrink-0 mt-0.5"></i>
-                            <div>
-                                <p class="text-sm font-bold text-dark mb-1">Pemesanan Cepat</p>
-                                <p class="text-xs text-gray-500 leading-relaxed">Klik tombol di atas untuk langsung menghubungi kami melalui WhatsApp dengan template pesan otomatis.</p>
-                            </div>
-                        </div>
+                        <button onclick="orderItem('${product.id}', true)" class="w-full bg-white border-2 border-primary text-primary hover:bg-lightpink py-3 rounded-xl font-bold transition-all">Beli Sekarang</button>
+                        <p class="text-xs text-gray-500 text-center">Checkout langsung di website. Tidak perlu pindah ke WhatsApp.</p>
                     </div>
                 </div>
             `;
