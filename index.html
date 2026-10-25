@@ -78,7 +78,7 @@
             <div class="flex justify-between h-20 items-center">
                 <!-- Logo -->
                 <a href="#home" class="flex items-center gap-2 text-primary group">
-                    <i class="ph-fill ph-flower-lotus text-3xl text-accent group-hover:scale-110 transition-transform"></i>
+                    <span class="flex items-center justify-center w-11 h-11 rounded-full bg-lightpink text-accent group-hover:scale-110 transition-transform"><i class="ph ph-user-circle text-3xl"></i></span>
                     <span class="font-heading font-bold text-2xl tracking-tight">Toko Anggun</span>
                 </a>
                 
@@ -114,7 +114,7 @@
             <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
                 <div class="text-center md:text-left">
                     <a href="#home" class="flex items-center justify-center md:justify-start gap-2 text-primary mb-3">
-                        <i class="ph-fill ph-flower-lotus text-2xl text-accent"></i>
+                        <span class="flex items-center justify-center w-9 h-9 rounded-full bg-lightpink text-accent"><i class="ph ph-user-circle text-2xl"></i></span>
                         <span class="font-heading font-bold text-xl">Toko Anggun</span>
                     </a>
                     <p class="text-sm text-graytext max-w-xs mx-auto md:mx-0">Dibuat dengan hati, dikirim dengan senang hati. Kami siap melayani kebutuhan Anda.</p>
@@ -158,13 +158,13 @@
             <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
                     <div class="order-2 lg:order-1 text-center lg:text-left z-10">
-                        <span class="inline-block text-sm font-semibold text-primary tracking-wider uppercase mb-4">Dibuat dengan hati, dikirim dengan senang hati ♡</span>
+                        <span class="inline-block text-sm font-semibold text-primary tracking-wider uppercase mb-4">Hijab nyaman, anggun, dan pilihanmu ♡</span>
                         <h1 class="font-heading text-5xl lg:text-7xl font-bold text-dark leading-[1.1] mb-6 tracking-tight">
-                            Hal Sederhana <br>
-                            <span class="text-primary italic font-light">yang Terasa Berarti.</span>
+                            Anggun dalam <br>
+                            <span class="text-primary italic font-light">Setiap Langkahmu.</span>
                         </h1>
                         <p class="text-graytext text-lg mb-8 max-w-md mx-auto lg:mx-0 leading-relaxed">
-                            Temukan pilihan cantik untuk menemani hari, merayakan momen, atau sekadar membuat seseorang tersenyum.
+                            Temukan koleksi hijab yang nyaman, cantik, dan mudah dipadukan untuk menemani aktivitasmu setiap hari.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                             <button onclick="window.location.hash='#catalog'" class="bg-primary hover:bg-primaryHover text-white px-8 py-3.5 rounded-full font-medium transition-all shadow-[0_4px_14px_0_rgba(82,109,82,0.39)] text-center">Lihat Koleksi</button>
@@ -175,7 +175,7 @@
                     <div class="order-1 lg:order-2 relative flex justify-center lg:justify-end z-10">
                         <div class="relative w-full max-w-md lg:max-w-lg">
                             <div class="absolute inset-0 bg-lightpink rounded-[3rem] transform rotate-6 scale-105 -z-10"></div>
-                            <img src="https://images.unsplash.com/photo-1563241597-12a4145ee563?q=80&w=800&auto=format&fit=crop" alt="Buket Bunga Toko Anggun" class="relative z-10 w-full aspect-[4/5] object-cover rounded-[2.5rem] shadow-xl border-4 border-white">
+                            <img src="https://images.unsplash.com/photo-1563241597-12a4145ee563?q=80&w=800&auto=format&fit=crop" alt="Inspirasi hijab anggun untuk aktivitas sehari-hari" class="relative z-10 w-full aspect-[4/5] object-cover rounded-[2.5rem] shadow-xl border-4 border-white">
                             
                             <!-- Floating Badge -->
                             <div class="absolute -top-6 -right-2 lg:-right-10 z-20 bg-white p-4 rounded-2xl shadow-lg border border-gray-50 transform rotate-12 flex items-center gap-2 animate-bounce hover:animate-none">
@@ -193,7 +193,7 @@
                     <div class="flex flex-col sm:flex-row justify-between items-end mb-12 gap-4">
                         <div>
                             <h2 class="font-heading text-4xl font-bold text-dark mb-2">Produk Unggulan</h2>
-                            <p class="text-graytext">Pilihan terbaik dari koleksi kami untuk momen spesialmu.</p>
+                            <p class="text-graytext">Pilihan hijab yang nyaman dan anggun untuk melengkapi penampilanmu.</p>
                         </div>
                         <a href="#catalog" class="text-primary font-bold hover:text-primaryHover flex items-center gap-1 transition-colors text-sm uppercase tracking-wider">
                             Lihat Semua <i class="ph-bold ph-arrow-right"></i>
@@ -206,68 +206,59 @@
                 </div>
             </section>
 
-            <!-- Categories & About -->
-            <section class="py-20 bg-base relative z-10" id="tentang">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-                    
-                    <!-- Kategori Cepat -->
-                    <div class="lg:col-span-5">
-                        <h2 class="font-heading text-3xl font-bold text-dark mb-8">Kategori</h2>
-                        <div class="grid grid-cols-3 gap-4" id="home-categories">
-                            <!-- Hardcoded visual categories matching mockup -->
-                            <a href="#catalog" class="flex flex-col items-center justify-center p-4 bg-white rounded-[1.5rem] shadow-sm hover:shadow-md hover:border-primary border border-transparent transition-all group">
-                                <div class="w-12 h-12 rounded-full bg-lightpink flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="ph-fill ph-squares-four text-accent text-xl"></i>
+            <!-- Tentang Toko Anggun: khusus hijab -->
+            <section class="py-16 md:py-20 bg-base relative z-10 overflow-hidden" id="tentang">
+                <div class="absolute -left-16 top-12 w-48 h-48 rounded-full bg-lightpink/70 blur-3xl pointer-events-none"></div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+                        <div class="lg:col-span-5">
+                            <span class="text-xs font-bold tracking-[0.25em] uppercase text-accent">Tentang Kami</span>
+                            <h2 class="font-heading text-3xl md:text-4xl font-bold text-dark mt-3 mb-6 leading-tight">Kami adalah <span class="text-primary italic">Toko Anggun</span></h2>
+                            <p class="text-graytext leading-relaxed mb-4">Toko Anggun hadir sebagai toko online yang berfokus pada hijab untuk perempuan Indonesia. Kami ingin membantu setiap perempuan menemukan hijab yang terasa nyaman, terlihat anggun, dan sesuai dengan gaya pribadinya.</p>
+                            <p class="text-graytext leading-relaxed mb-5">Bagi kami, hijab bukan hanya pelengkap penampilan. Hijab adalah bagian dari keseharian—menemani belajar, bekerja, beraktivitas, hingga momen istimewa. Karena itu, kami mengutamakan pilihan model, warna, dan bahan yang mudah dipadukan serta nyaman digunakan.</p>
+                            <p class="font-heading italic text-accent text-xl">“Anggun dalam setiap langkahmu.”</p>
+                        </div>
+                        <div class="lg:col-span-3">
+                            <div class="rounded-[2rem] bg-gradient-to-br from-lightpink via-white to-[#dce6dc] p-7 md:p-9 min-h-[310px] flex flex-col justify-between border border-white shadow-sm">
+                                <div class="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center text-primary shadow-sm"><i class="ph ph-user-circle text-4xl"></i></div>
+                                <div>
+                                    <span class="text-xs font-bold uppercase tracking-[0.2em] text-accent">Toko Anggun</span>
+                                    <p class="font-heading text-3xl text-dark font-bold mt-2">Hijab untuk Setiap Langkahmu</p>
+                                    <p class="text-sm text-graytext mt-3">Pilihan hijab untuk menemani hari dengan nyaman dan percaya diri.</p>
                                 </div>
-                                <span class="text-xs font-semibold text-dark text-center">Semua</span>
-                            </a>
-                            <a href="#catalog" class="flex flex-col items-center justify-center p-4 bg-white rounded-[1.5rem] shadow-sm hover:shadow-md hover:border-primary border border-transparent transition-all group">
-                                <div class="w-12 h-12 rounded-full bg-lightpink flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="ph-fill ph-flower-tulip text-accent text-xl"></i>
-                                </div>
-                                <span class="text-xs font-semibold text-dark text-center">Buket Bunga</span>
-                            </a>
-                            <a href="#catalog" class="flex flex-col items-center justify-center p-4 bg-white rounded-[1.5rem] shadow-sm hover:shadow-md hover:border-primary border border-transparent transition-all group">
-                                <div class="w-12 h-12 rounded-full bg-lightpink flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="ph-fill ph-plant text-accent text-xl"></i>
-                                </div>
-                                <span class="text-xs font-semibold text-dark text-center">Bunga Meja</span>
-                            </a>
-                            <a href="#catalog" class="flex flex-col items-center justify-center p-4 bg-white rounded-[1.5rem] shadow-sm hover:shadow-md hover:border-primary border border-transparent transition-all group">
-                                <div class="w-12 h-12 rounded-full bg-lightpink flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="ph-fill ph-gift text-accent text-xl"></i>
-                                </div>
-                                <span class="text-xs font-semibold text-dark text-center">Paket Hadiah</span>
-                            </a>
-                            <a href="#catalog" class="flex flex-col items-center justify-center p-4 bg-white rounded-[1.5rem] shadow-sm hover:shadow-md hover:border-primary border border-transparent transition-all group">
-                                <div class="w-12 h-12 rounded-full bg-lightpink flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="ph-fill ph-t-shirt text-accent text-xl"></i>
-                                </div>
-                                <span class="text-xs font-semibold text-dark text-center">Hijab & Aksesoris</span>
-                            </a>
-                            <a href="#catalog" class="flex flex-col items-center justify-center p-4 bg-white rounded-[1.5rem] shadow-sm hover:shadow-md hover:border-primary border border-transparent transition-all group">
-                                <div class="w-12 h-12 rounded-full bg-lightpink flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="ph-fill ph-plus text-accent text-xl"></i>
-                                </div>
-                                <span class="text-xs font-semibold text-dark text-center">Lainnya</span>
-                            </a>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-4 space-y-5">
+                            <div class="flex gap-4 items-start">
+                                <div class="w-12 h-12 rounded-full bg-lightpink flex-shrink-0 flex items-center justify-center text-primary"><i class="ph ph-seal-check text-2xl"></i></div>
+                                <div><h3 class="font-heading font-bold text-dark mb-1">Pilihan Berkualitas</h3><p class="text-sm text-graytext leading-relaxed">Kami mengutamakan hijab dengan bahan dan jahitan yang nyaman untuk pemakaian sehari-hari.</p></div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-12 h-12 rounded-full bg-lightpink flex-shrink-0 flex items-center justify-center text-primary"><i class="ph ph-heart text-2xl"></i></div>
+                                <div><h3 class="font-heading font-bold text-dark mb-1">Model Anggun</h3><p class="text-sm text-graytext leading-relaxed">Pilihan gaya hijab yang mudah dipadukan dengan beragam aktivitas dan suasana.</p></div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-12 h-12 rounded-full bg-lightpink flex-shrink-0 flex items-center justify-center text-primary"><i class="ph ph-shield-check text-2xl"></i></div>
+                                <div><h3 class="font-heading font-bold text-dark mb-1">Pelayanan Terpercaya</h3><p class="text-sm text-graytext leading-relaxed">Kami berupaya memberi informasi produk yang jelas dan membantu pelanggan dengan ramah.</p></div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-12 h-12 rounded-full bg-lightpink flex-shrink-0 flex items-center justify-center text-primary"><i class="ph ph-leaf text-2xl"></i></div>
+                                <div><h3 class="font-heading font-bold text-dark mb-1">Nyaman untuk Keseharian</h3><p class="text-sm text-graytext leading-relaxed">Hijab yang mendukungmu menjalani hari dengan lebih nyaman dan percaya diri.</p></div>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Tentang / Hubungi -->
-                    <div class="lg:col-span-7 bg-lightpink/40 rounded-[2.5rem] p-10 lg:p-14 relative overflow-hidden h-full flex flex-col justify-center border border-white">
-                        <div class="absolute top-0 right-0 text-white/50 transform translate-x-4 -translate-y-4">
-                            <i class="ph-fill ph-flower-lotus text-[10rem]"></i>
+                    <div class="mt-14 md:mt-16 rounded-[2rem] bg-white border border-lightpink/70 px-6 py-9 md:px-10">
+                        <div class="text-center max-w-2xl mx-auto mb-8">
+                            <h3 class="font-heading text-2xl md:text-3xl font-bold text-dark">Mengapa Memilih Toko Anggun?</h3>
+                            <p class="text-sm text-graytext mt-3">Kami ingin pengalaman memilih hijab terasa mudah, nyaman, dan menyenangkan.</p>
                         </div>
-                        <div class="relative z-10 max-w-lg">
-                            <h2 class="font-heading text-4xl font-bold text-dark mb-4 leading-tight">Dipilih sepenuh hati.</h2>
-                            <p class="text-graytext mb-8 leading-relaxed">
-                                Setiap pilihan punya cerita. Kami percaya hal kecil yang dipilih dengan tulus bisa membuat hari terasa lebih hangat. Ceritakan yang kamu cari, Anggun siap membantu.
-                            </p>
-                            <button onclick="openWhatsApp()" class="bg-primary hover:bg-primaryHover text-white px-8 py-3.5 rounded-full font-medium transition-all shadow-md inline-flex items-center gap-3">
-                                <i class="ph-fill ph-whatsapp-logo text-xl"></i> Hubungi via WhatsApp
-                            </button>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-7">
+                            <div class="text-center"><i class="ph ph-user-circle text-3xl text-primary"></i><h4 class="font-heading font-bold text-dark mt-3 mb-1">Pilihan Model</h4><p class="text-sm text-graytext">Segi empat, pashmina, bergo, dan hijab instan sesuai stok tersedia.</p></div>
+                            <div class="text-center"><i class="ph ph-sparkle text-3xl text-primary"></i><h4 class="font-heading font-bold text-dark mt-3 mb-1">Warna Menawan</h4><p class="text-sm text-graytext">Pilihan warna yang mudah dipadukan dengan gaya sehari-hari.</p></div>
+                            <div class="text-center"><i class="ph ph-package text-3xl text-primary"></i><h4 class="font-heading font-bold text-dark mt-3 mb-1">Info Pesanan</h4><p class="text-sm text-graytext">Pantau perkembangan pesanan melalui fitur cek status.</p></div>
+                            <div class="text-center"><i class="ph ph-chat-circle-dots text-3xl text-primary"></i><h4 class="font-heading font-bold text-dark mt-3 mb-1">Layanan Ramah</h4><p class="text-sm text-graytext">Kami siap membantu pertanyaan seputar produk dan pesanan.</p></div>
                         </div>
+                        <div class="text-center mt-8"><a href="#catalog" class="inline-flex items-center gap-2 bg-primary hover:bg-primaryHover text-white px-7 py-3 rounded-full font-semibold transition">Jelajahi Koleksi Hijab <i class="ph ph-arrow-right"></i></a></div>
                     </div>
                 </div>
             </section>
@@ -281,7 +272,7 @@
             <div class="pt-12 pb-8 border-b border-lightpink/50">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h1 class="font-heading text-4xl font-bold text-dark mb-3">Koleksi Kami</h1>
-                    <p class="text-graytext">Jelajahi berbagai pilihan produk dan jasa terbaik dari Toko Anggun.</p>
+                    <p class="text-graytext">Temukan koleksi hijab Toko Anggun: pilihan warna, model, dan bahan untuk berbagai aktivitas.</p>
                 </div>
             </div>
 
