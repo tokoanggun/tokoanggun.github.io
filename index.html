@@ -68,6 +68,83 @@
             opacity: 0.6;
             border-radius: 50%;
         }
+    
+
+        /* Responsive safeguards: preserve the same brand and content across screen sizes */
+        *, *::before, *::after { box-sizing: border-box; }
+        html { width: 100%; max-width: 100%; scroll-padding-top: 5rem; }
+        body, #app-content, main, section, article, nav, footer { min-width: 0; max-width: 100%; }
+        img, video, iframe, canvas, svg { max-width: 100%; }
+        img { height: auto; }
+        input, select, textarea, button { max-width: 100%; }
+        a, button { -webkit-tap-highlight-color: transparent; }
+        #toast { max-width: calc(100vw - 2rem); overflow-wrap: anywhere; }
+        table { max-width: 100%; }
+        .overflow-x-auto { overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+
+        @media (max-width: 767px) {
+            #navbar .max-w-7xl > div {
+                min-height: 4.25rem;
+                height: auto;
+                padding-top: .45rem;
+                padding-bottom: .45rem;
+                gap: .5rem;
+                flex-wrap: wrap;
+            }
+            #navbar a[href="#home"].group { gap: .45rem; min-width: 0; }
+            #navbar a[href="#home"].group > span:first-child {
+                width: 2.25rem;
+                height: 2.25rem;
+                flex: 0 0 2.25rem;
+            }
+            #navbar a[href="#home"].group > span:last-child {
+                font-size: 1.2rem;
+                line-height: 1.2;
+                white-space: nowrap;
+            }
+            #navbar .max-w-7xl > div > .flex.items-center.gap-3 {
+                gap: .35rem;
+            }
+            #navbar a[aria-label="Cari produk"] { display: none; }
+            #navbar a[href="#cart"] {
+                padding: .55rem .7rem;
+                gap: .3rem;
+                white-space: nowrap;
+            }
+            #navbar a[href="#cart"] > span:not(#cart-count) { display: none; }
+            #navbar a[href="#admin"] {
+                padding: .55rem .65rem;
+                font-size: .65rem;
+            }
+            #navbar a[href="#track-order"] { padding: .35rem; }
+            #app-content { overflow-wrap: anywhere; }
+            #app-content .grid { min-width: 0; }
+            #app-content .grid > * { min-width: 0; }
+            #app-content h1 { font-size: clamp(2.15rem, 9vw, 3.1rem); overflow-wrap: anywhere; }
+            #app-content h2 { overflow-wrap: anywhere; }
+            #app-content input, #app-content select, #app-content textarea {
+                width: 100%;
+                min-width: 0;
+            }
+            #toast { right: 1rem; bottom: 1rem; left: 1rem; width: auto; }
+        }
+
+        @media (max-width: 380px) {
+            #navbar a[href="#home"].group > span:last-child { font-size: 1.05rem; }
+            #navbar a[href="#admin"] { font-size: .6rem; padding: .5rem; }
+            #navbar a[href="#cart"] { padding: .5rem .55rem; }
+            #navbar .max-w-7xl > div > .flex.items-center.gap-3 { gap: .2rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
