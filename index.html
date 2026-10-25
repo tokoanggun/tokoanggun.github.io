@@ -86,6 +86,7 @@
                 <div class="hidden md:flex space-x-8">
                     <a href="#home" class="text-dark hover:text-primary transition-colors font-medium">Beranda</a>
                     <a href="#catalog" class="text-dark hover:text-primary transition-colors font-medium">Koleksi</a>
+                    <a href="#track-order" class="text-dark hover:text-primary transition-colors font-medium">Cek Pesanan</a>
                     <a href="#home" onclick="scrollToSection('tentang')" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Tentang</a>
                     <a href="#home" onclick="scrollToSection('kontak')" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Kontak</a>
                 </div>
@@ -93,6 +94,7 @@
                 <!-- Right Actions -->
                 <div class="flex items-center gap-3 md:gap-4">
                     <a href="#catalog" class="text-graytext hover:text-primary transition-colors p-2" aria-label="Cari produk"><i class="ph ph-magnifying-glass text-xl"></i></a>
+                    <a href="#track-order" class="text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Cek status pesanan"><i class="ph ph-package text-xl"></i><span class="hidden sm:inline ml-1">Lacak</span></a>
                     <a href="#cart" class="relative bg-primary hover:bg-primaryHover text-white px-4 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm font-medium text-sm">
                         <i class="ph ph-shopping-cart text-lg"></i><span>Keranjang</span>
                         <span id="cart-count" class="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-white text-primary text-xs font-bold">0</span>
@@ -121,6 +123,7 @@
                 <div class="flex flex-wrap justify-center gap-6 text-sm font-medium text-dark">
                     <a href="#home" class="hover:text-primary transition">Beranda</a>
                     <a href="#catalog" class="hover:text-primary transition">Koleksi</a>
+                    <a href="#track-order" class="hover:text-primary transition">Cek Pesanan</a>
                     <a href="#home" onclick="scrollToSection('tentang')" class="hover:text-primary transition">Tentang</a>
                     <a href="#kontak" class="hover:text-primary transition">Kontak</a>
                 </div>
@@ -675,7 +678,9 @@
         // ⚠️ PENTING: Ganti tulisan YOUR_SUPABASE_ANON_KEY di bawah dengan API Key Anda!
         const SUPABASE_KEY = 'sb_publishable_QBTbWX_v2OcDtwgrPRj8xw_0lyG9apI'; 
         
-        let supabaseClient = null;
+        
+        const QRIS_IMAGE_SRC = 'data:image/png;base64,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';
+let supabaseClient = null;
         try {
             if (!window.supabase || typeof window.supabase.createClient !== 'function') {
                 throw new Error('Pustaka Supabase belum berhasil dimuat. Periksa koneksi internet atau CDN.');
@@ -892,6 +897,8 @@
                 } else if (baseHash === '#checkout') {
                     if (APP_STATE.products.length === 0) await fetchProducts();
                     renderCheckout(appContent);
+                } else if (baseHash === '#track-order') {
+                    renderTrackOrder(appContent);
                 } else if (baseHash === '#admin') {
                     const user = await checkAuth();
                     if (!user) {
@@ -1257,6 +1264,90 @@
             </div></section>`;
             updateCartCount();
         }
+
+        function orderStatusLabel(status) {
+            const labels = {
+                new: 'Menunggu diproses',
+                awaiting_payment: 'Menunggu pembayaran',
+                processing: 'Sedang diproses',
+                shipped: 'Sedang dikirim',
+                delivered: 'Selesai / diterima',
+                cancelled: 'Dibatalkan'
+            };
+            return labels[status] || status || 'Belum tersedia';
+        }
+
+        function paymentStatusLabel(status) {
+            const labels = {
+                pending: 'Menunggu pembayaran',
+                awaiting_payment: 'Menunggu pembayaran',
+                paid: 'Lunas',
+                failed: 'Gagal',
+                expired: 'Kedaluwarsa',
+                refunded: 'Dikembalikan',
+                setup_error: 'Perlu pengecekan admin'
+            };
+            return labels[status] || status || 'Belum tersedia';
+        }
+
+        function renderTrackOrder(container) {
+            const lastOrder = APP_STATE.lastOrder || {};
+            const lastPhone = APP_STATE.lastOrderPhone || '';
+            container.innerHTML = '<section class="bg-base min-h-[70vh] py-12 px-4"><div class="max-w-3xl mx-auto"><div class="mb-8"><p class="text-xs uppercase tracking-widest text-accent font-bold mb-2">Layanan pesanan</p><h1 class="font-heading text-3xl sm:text-4xl font-bold text-dark">Cek Status Pesanan</h1><p class="text-gray-600 mt-2">Masukkan nomor pesanan dan nomor HP yang digunakan saat checkout untuk melihat status pembayaran dan pengiriman.</p></div><form id="track-order-form" class="bg-white border border-gray-100 rounded-2xl p-5 sm:p-6 grid sm:grid-cols-2 gap-4"><div><label for="track-order-number" class="block text-sm font-bold mb-2">Nomor pesanan</label><input id="track-order-number" required maxlength="80" value="' + escapeHTML(lastOrder.order_number || '') + '" placeholder="TA-20261025-1234ABCD" class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none"></div><div><label for="track-order-phone" class="block text-sm font-bold mb-2">Nomor HP checkout</label><input id="track-order-phone" required minlength="8" maxlength="25" value="' + escapeHTML(lastPhone) + '" placeholder="08xxxxxxxxxx" inputmode="tel" class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none"></div><div class="sm:col-span-2"><button id="track-order-submit" type="submit" class="w-full sm:w-auto bg-primary hover:bg-primaryHover text-white px-7 py-3 rounded-xl font-bold"><i class="ph ph-magnifying-glass mr-2"></i>Lacak Pesanan</button></div></form><div id="track-order-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 mt-4 text-sm" role="alert"></div><div id="track-order-result" class="mt-6"></div></div></section>';
+            document.getElementById('track-order-form')?.addEventListener('submit', submitTrackOrder);
+        }
+
+        async function submitTrackOrder(event) {
+            event.preventDefault();
+            const button = document.getElementById('track-order-submit');
+            const errorBox = document.getElementById('track-order-error');
+            const resultBox = document.getElementById('track-order-result');
+            button.disabled = true;
+            button.textContent = 'Memeriksa pesanan…';
+            errorBox.classList.add('hidden');
+            resultBox.innerHTML = '<div class="bg-white border border-gray-100 rounded-2xl p-8 text-center"><div class="loader mx-auto"></div><p class="text-sm text-gray-500 mt-3">Mengambil status pesanan…</p></div>';
+            try {
+                const response = await fetch(SUPABASE_URL + '/functions/v1/track-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+                    body: JSON.stringify({
+                        order_number: document.getElementById('track-order-number').value.trim(),
+                        phone: document.getElementById('track-order-phone').value.trim()
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok || !result.ok) throw new Error(result.error || 'Status pesanan tidak dapat diperiksa.');
+                renderTrackedOrder(result.order, resultBox);
+            } catch (error) {
+                resultBox.innerHTML = '';
+                errorBox.textContent = error.message || 'Status pesanan tidak dapat diperiksa. Periksa kembali nomor pesanan dan HP.';
+                errorBox.classList.remove('hidden');
+            } finally {
+                button.disabled = false;
+                button.innerHTML = '<i class="ph ph-magnifying-glass mr-2"></i>Lacak Pesanan';
+            }
+        }
+
+        function renderTrackedOrder(order, container) {
+            const itemsHtml = (order.items || []).map(item => '<div class="flex justify-between gap-3 text-sm py-2 border-b border-gray-100"><span>' + escapeHTML(item.product_name) + ' × ' + Number(item.quantity) + '</span><b>' + formatRupiah(item.line_total) + '</b></div>').join('');
+            const shippedInfo = order.shipping_required
+                ? '<div class="mt-4 bg-base rounded-xl p-4"><p class="text-sm font-bold">Informasi pengiriman</p><p class="text-sm text-gray-600 mt-2">Kurir: ' + escapeHTML(order.shipping_courier || order.shipping_method || 'Belum ditentukan') + '</p><p class="text-sm text-gray-600 mt-1">Nomor resi: <b class="text-dark">' + escapeHTML(order.tracking_number || 'Belum tersedia') + '</b></p>' + (order.tracking_number ? '<p class="text-xs text-gray-500 mt-1">Simpan nomor resi untuk mengecek paket di layanan kurir.</p>' : '') + (order.shipping_required && !order.shipping_confirmed ? '<p class="text-sm text-amber-800 mt-3">Toko sedang menghitung ongkir. Pembayaran QRIS akan muncul setelah total final dikonfirmasi.</p>' : '') + '</div>'
+                : '<p class="text-sm text-gray-600 mt-3">Metode penerimaan: Ambil sendiri</p>';
+
+            let paymentPanel = '';
+            if (order.payment_status === 'paid') {
+                paymentPanel = '<div class="bg-green-50 border border-green-200 text-green-800 rounded-xl p-4 mt-5"><b>Pembayaran telah dikonfirmasi</b><p class="text-sm mt-1">Terima kasih. Pembayaran sudah ditandai lunas oleh admin.</p></div>';
+            } else if (order.order_status === 'cancelled') {
+                paymentPanel = '<div class="bg-red-50 border border-red-200 text-red-800 rounded-xl p-4 mt-5"><b>Pesanan dibatalkan</b><p class="text-sm mt-1">Hubungi toko jika kamu membutuhkan bantuan.</p></div>';
+            } else if (order.shipping_required && !order.shipping_confirmed) {
+                paymentPanel = '<div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-4 mt-5"><b>Menunggu konfirmasi ongkir</b><p class="text-sm mt-1">Toko akan menetapkan biaya kirim terlebih dahulu. Jangan melakukan pembayaran sebelum total final tersedia.</p></div>';
+            } else {
+                paymentPanel = '<div class="border border-gray-200 rounded-2xl p-4 sm:p-6 mt-5"><h3 class="font-heading text-xl font-bold text-center">Pembayaran QRIS</h3><p class="text-sm text-gray-600 text-center mt-2">Pindai QR berikut menggunakan aplikasi bank atau dompet digital yang mendukung QRIS.</p><div class="max-w-sm mx-auto mt-4 p-3 border border-gray-100 rounded-xl"><img src="' + QRIS_IMAGE_SRC + '" alt="QRIS Toko Anggun" class="w-full h-auto" loading="eager"><p class="text-xs text-gray-500 text-center mt-2">NMID: ID1026581707373 · Kode A01</p></div><div class="bg-base rounded-xl p-4 mt-4"><p class="text-sm text-gray-600">Total yang perlu dibayar</p><p class="text-2xl font-bold text-primary mt-1">' + formatRupiah(order.total) + '</p></div><p class="text-sm text-gray-600 mt-4">Simpan bukti transaksi. Status baru berubah menjadi lunas setelah admin memeriksa dana masuk.</p></div>';
+            }
+            const statusText = order.shipping_required && !order.shipping_confirmed ? 'Menunggu konfirmasi ongkir' : orderStatusLabel(order.order_status);
+            container.innerHTML = '<div class="bg-white border border-gray-100 rounded-2xl p-5 sm:p-7"><div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"><div><p class="text-xs text-gray-500">Nomor pesanan</p><h2 class="font-bold text-xl text-primary break-all">' + escapeHTML(order.order_number) + '</h2><p class="text-sm text-gray-600 mt-1">' + escapeHTML(order.customer_name) + '</p></div><div class="sm:text-right"><span class="inline-block bg-lightpink/60 text-dark text-xs font-bold rounded-full px-3 py-2">' + escapeHTML(statusText) + '</span><p class="text-sm mt-2">Pembayaran: <b>' + escapeHTML(paymentStatusLabel(order.payment_status)) + '</b></p><p class="text-xs text-gray-500 mt-1">Dibuat ' + escapeHTML(new Date(order.created_at).toLocaleString('id-ID')) + '</p></div></div><div class="mt-5"><h3 class="font-bold">Rincian produk</h3>' + itemsHtml + '</div><div class="flex justify-between text-sm mt-4"><span class="text-gray-600">Subtotal</span><b>' + formatRupiah(order.subtotal) + '</b></div><div class="flex justify-between text-sm mt-2"><span class="text-gray-600">Ongkir</span><b>' + (order.shipping_required ? (order.shipping_confirmed ? formatRupiah(order.shipping_cost) : 'Menunggu konfirmasi') : 'Rp 0') + '</b></div><div class="flex justify-between text-lg mt-3 pt-3 border-t border-gray-200"><b>Total</b><b class="text-primary">' + formatRupiah(order.total) + '</b></div>' + shippedInfo + paymentPanel + '<button type="button" onclick="window.location.hash=\'#track-order\'" class="mt-5 text-primary font-bold text-sm">Muat ulang status</button></div>';
+        }
+
         function renderCheckout(container) {
             const validItems = APP_STATE.cart.map(item => ({ item, product: APP_STATE.products.find(p => p.id === item.id) })).filter(row => row.product);
             if (!validItems.length) {
@@ -1322,7 +1413,7 @@
                 });
                 const result = await response.json();
                 if (!response.ok || !result.ok) throw new Error(result.error || 'Pesanan gagal disimpan. Coba lagi.');
-                APP_STATE.lastOrder = result; APP_STATE.cart = []; saveCart();
+                APP_STATE.lastOrder = result; APP_STATE.lastOrderPhone = payload.customer.phone; APP_STATE.cart = []; saveCart();
                 if (result.payment_url) { renderOrderResult(document.getElementById('app-content'), result); setTimeout(() => { window.location.href = result.payment_url; }, 700); return; }
                 renderOrderResult(document.getElementById('app-content'), result);
             } catch (error) {
@@ -1339,14 +1430,14 @@
             if (waitingShipping) {
                 paymentContent = '<div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-4 mt-5 text-left text-sm"><b>Menunggu konfirmasi ongkir</b><p class="mt-1">' + escapeHTML(result.message || 'Pesanan tersimpan. Admin perlu mengonfirmasi ongkir sebelum pembayaran.') + '</p><p class="mt-2">Jangan membayar dulu karena total ini belum termasuk ongkir. Admin akan menindaklanjuti melalui nomor HP yang kamu isi.</p></div>';
             } else if (manualQris) {
-                paymentContent = '<div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 mt-6 text-left"><h2 class="font-bold text-xl text-center">Pembayaran QRIS</h2><p class="text-sm text-gray-600 text-center mt-2">Buka aplikasi bank atau dompet digital yang mendukung QRIS, lalu pindai kode berikut.</p><div class="max-w-sm mx-auto mt-5 p-3 bg-white border border-gray-100 rounded-xl"><img src="https://tokoanggun.github.io/assets/qris.png?v=20261025" alt="QRIS Toko Anggun untuk pembayaran" class="w-full h-auto" loading="eager"><p class="text-xs text-gray-500 text-center mt-2">NMID: ID1026581707373 · Kode: A01</p></div><div class="bg-base rounded-xl p-4 mt-4"><p class="text-sm text-gray-600">Nominal yang harus dibayar</p><p class="text-2xl font-bold text-primary mt-1">' + formatRupiah(result.total || 0) + '</p><p class="text-xs text-gray-500 mt-2">Masukkan nominal tepat di atas jika aplikasi pembayaran memintanya.</p></div><ol class="list-decimal pl-5 mt-4 space-y-2 text-sm text-gray-700"><li>Pastikan nama penerima yang muncul di aplikasi sesuai dengan pemilik QRIS.</li><li>Selesaikan pembayaran dan simpan bukti transaksi.</li><li>Admin akan memeriksa dana masuk dan memperbarui status pesanan. Halaman ini tidak otomatis menandai pembayaran sebagai lunas.</li></ol></div>';
+                paymentContent = '<div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 mt-6 text-left"><h2 class="font-bold text-xl text-center">Pembayaran QRIS</h2><p class="text-sm text-gray-600 text-center mt-2">Buka aplikasi bank atau dompet digital yang mendukung QRIS, lalu pindai kode berikut.</p><div class="max-w-sm mx-auto mt-5 p-3 bg-white border border-gray-100 rounded-xl"><img src="' + QRIS_IMAGE_SRC + '" alt="QRIS Toko Anggun untuk pembayaran" class="w-full h-auto" loading="eager"><p class="text-xs text-gray-500 text-center mt-2">NMID: ID1026581707373 · Kode: A01</p></div><div class="bg-base rounded-xl p-4 mt-4"><p class="text-sm text-gray-600">Nominal yang harus dibayar</p><p class="text-2xl font-bold text-primary mt-1">' + formatRupiah(result.total || 0) + '</p><p class="text-xs text-gray-500 mt-2">Masukkan nominal tepat di atas jika aplikasi pembayaran memintanya.</p></div><ol class="list-decimal pl-5 mt-4 space-y-2 text-sm text-gray-700"><li>Pastikan nama penerima yang muncul di aplikasi sesuai dengan pemilik QRIS.</li><li>Selesaikan pembayaran dan simpan bukti transaksi.</li><li>Admin akan memeriksa dana masuk dan memperbarui status pesanan. Halaman ini tidak otomatis menandai pembayaran sebagai lunas.</li></ol></div>';
             } else if (result.payment_setup_required) {
                 paymentContent = '<div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-4 mt-5 text-left text-sm"><b>Langkah berikutnya diperlukan</b><p class="mt-1">' + escapeHTML(result.message || 'Pembayaran belum dapat dilanjutkan.') + '</p></div>';
             } else {
                 paymentContent = '<p class="text-sm text-gray-600 mt-4">Membuka halaman pembayaran aman…</p>';
             }
 
-            container.innerHTML = '<section class="bg-base min-h-[70vh] py-12 px-4"><div class="max-w-2xl mx-auto bg-white rounded-3xl border border-gray-100 p-6 sm:p-10 text-center"><div class="w-16 h-16 rounded-full bg-green-50 text-green-700 flex items-center justify-center mx-auto"><i class="ph ph-check-circle text-4xl"></i></div><h1 class="font-heading text-3xl font-bold mt-5">Pesanan berhasil dibuat</h1><p class="text-gray-500 mt-2">Simpan nomor pesanan berikut untuk referensi.</p><div class="bg-base rounded-xl p-4 mt-5"><p class="text-xs text-gray-500">Nomor pesanan</p><p class="text-xl font-bold text-primary mt-1 break-all">' + escapeHTML(result.order_number || '-') + '</p><p class="text-xs text-gray-500 mt-3">' + totalLabel + '</p><p class="text-lg font-bold mt-1">' + formatRupiah(result.total || 0) + '</p></div>' + paymentContent + '<p class="text-sm text-gray-500 mt-5">Jika ada kendala, simpan nomor pesanan dan bukti pembayaran untuk pengecekan admin.</p><div class="flex flex-col sm:flex-row gap-3 mt-6"><a href="#catalog" class="flex-1 bg-primary text-white rounded-xl p-3 font-bold">Lanjut Belanja</a><a href="#home" class="flex-1 border border-gray-200 rounded-xl p-3 font-bold">Beranda</a></div></div></section>';
+            container.innerHTML = '<section class="bg-base min-h-[70vh] py-12 px-4"><div class="max-w-2xl mx-auto bg-white rounded-3xl border border-gray-100 p-6 sm:p-10 text-center"><div class="w-16 h-16 rounded-full bg-green-50 text-green-700 flex items-center justify-center mx-auto"><i class="ph ph-check-circle text-4xl"></i></div><h1 class="font-heading text-3xl font-bold mt-5">Pesanan berhasil dibuat</h1><p class="text-gray-500 mt-2">Simpan nomor pesanan berikut untuk referensi.</p><div class="bg-base rounded-xl p-4 mt-5"><p class="text-xs text-gray-500">Nomor pesanan</p><p class="text-xl font-bold text-primary mt-1 break-all">' + escapeHTML(result.order_number || '-') + '</p><p class="text-xs text-gray-500 mt-3">' + totalLabel + '</p><p class="text-lg font-bold mt-1">' + formatRupiah(result.total || 0) + '</p></div>' + paymentContent + '<p class="text-sm text-gray-500 mt-5">Jika ada kendala, simpan nomor pesanan dan bukti pembayaran untuk pengecekan admin.</p><div class="flex flex-col sm:flex-row gap-3 mt-6"><a href="#track-order" class="flex-1 bg-primary text-white rounded-xl p-3 font-bold">Cek Status Pesanan</a><a href="#catalog" class="flex-1 border border-gray-200 rounded-xl p-3 font-bold">Lanjut Belanja</a><a href="#home" class="flex-1 border border-gray-200 rounded-xl p-3 font-bold">Beranda</a></div></div></section>';
         }
         // D. ADMIN LOGIN
         async function renderAdminLogin(container) {
@@ -1468,7 +1559,24 @@
                     const paymentText = order.payment_method === 'qris_manual' ? 'QRIS manual' : (order.payment_method || 'Belum dipilih');
                     const canConfirmQris = order.payment_method === 'qris_manual' && !order.shipping_required && order.payment_status !== 'paid';
                     const confirmButton = canConfirmQris ? '<button type="button" onclick="confirmQrisOrder(&quot;' + escapeHTML(order.id) + '&quot;)" class="mt-3 bg-primary hover:bg-primaryHover text-white text-xs px-4 py-2 rounded-lg font-bold">Konfirmasi pembayaran diterima</button>' : '';
-                    return '<article class="border border-gray-100 rounded-xl p-4 mb-3"><div class="flex flex-col sm:flex-row sm:justify-between gap-3"><div><p class="font-bold text-primary">' + escapeHTML(order.order_number) + '</p><p class="font-semibold mt-1">' + escapeHTML(order.customer_name) + '</p><p class="text-sm text-gray-500">' + escapeHTML(order.customer_phone) + (order.customer_email ? ' · ' + escapeHTML(order.customer_email) : '') + '</p><p class="text-xs text-gray-500 mt-1">Metode: ' + escapeHTML(paymentText) + '</p></div><div class="sm:text-right"><p class="font-bold text-lg">' + formatRupiah(order.total) + '</p><p class="text-xs text-gray-500">' + escapeHTML(order.payment_status) + ' · ' + escapeHTML(order.order_status) + '</p><p class="text-xs text-gray-400 mt-1">' + escapeHTML(new Date(order.created_at).toLocaleString('id-ID')) + '</p></div></div><p class="text-sm mt-3">' + itemText + '</p><p class="text-xs text-gray-500 mt-2">' + shipText + '</p>' + (order.notes ? '<p class="text-xs text-gray-500 mt-1">Catatan: ' + escapeHTML(order.notes) + '</p>' : '') + confirmButton + '</article>';
+                    const currentStatus = order.order_status || 'new';
+                    const statusOptions = [
+                        ['new','Menunggu diproses'],
+                        ['awaiting_payment','Menunggu pembayaran'],
+                        ['processing','Sedang diproses'],
+                        ['shipped','Dikirim'],
+                        ['delivered','Selesai / diterima'],
+                        ['cancelled','Dibatalkan']
+                    ].map(option => '<option value="' + option[0] + '"' + (currentStatus === option[0] ? ' selected' : '') + '>' + option[1] + '</option>').join('');
+                    const orderId = escapeHTML(order.id);
+                    const courierFields = order.shipping_required
+                        ? '<div class="grid sm:grid-cols-2 gap-3 mt-3"><div><label class="text-xs font-bold block mb-1">Biaya ongkir (Rp)</label><input id="admin-shipcost-' + orderId + '" type="number" min="0" step="1" value="' + Number(order.shipping_cost || 0) + '" class="w-full border border-gray-200 rounded-lg p-2 text-sm"></div><div><label class="text-xs font-bold block mb-1">Kurir</label><input id="admin-courier-' + orderId + '" maxlength="80" value="' + escapeHTML(order.shipping_courier || order.shipping_method || '') + '" placeholder="JNE, J&T, kurir toko…" class="w-full border border-gray-200 rounded-lg p-2 text-sm"></div><div class="sm:col-span-2"><label class="text-xs font-bold block mb-1">Nomor resi</label><input id="admin-tracking-' + orderId + '" maxlength="120" value="' + escapeHTML(order.tracking_number || '') + '" placeholder="Masukkan nomor resi pengiriman" class="w-full border border-gray-200 rounded-lg p-2 text-sm"></div></div>'
+                        : '';
+                    const saveButton = '<button type="button" onclick="saveOrderFulfillment(&quot;' + orderId + '&quot;,' + Boolean(order.shipping_required) + ',' + Boolean(order.shipping_confirmed) + ',' + Number(order.subtotal || 0) + ')" class="mt-3 border border-primary text-primary hover:bg-primary hover:text-white text-xs px-4 py-2 rounded-lg font-bold">Simpan status' + (order.shipping_required && !order.shipping_confirmed ? ' & konfirmasi ongkir' : '') + '</button>';
+                    const shippingStatus = order.shipping_required
+                        ? '<p class="text-xs mt-2 ' + (order.shipping_confirmed ? 'text-green-700' : 'text-amber-700') + '">' + (order.shipping_confirmed ? 'Ongkir sudah dikonfirmasi: ' + formatRupiah(order.shipping_cost) : 'Menunggu konfirmasi ongkir; QRIS akan dibuka setelah ongkir disimpan.') + '</p>'
+                        : '';
+                    return '<article class="border border-gray-100 rounded-xl p-4 mb-3"><div class="flex flex-col sm:flex-row sm:justify-between gap-3"><div><p class="font-bold text-primary">' + escapeHTML(order.order_number) + '</p><p class="font-semibold mt-1">' + escapeHTML(order.customer_name) + '</p><p class="text-sm text-gray-500">' + escapeHTML(order.customer_phone) + (order.customer_email ? ' · ' + escapeHTML(order.customer_email) : '') + '</p><p class="text-xs text-gray-500 mt-1">Metode: ' + escapeHTML(paymentText) + '</p></div><div class="sm:text-right"><p class="font-bold text-lg">' + formatRupiah(order.total) + '</p><p class="text-xs text-gray-500">' + escapeHTML(paymentStatusLabel(order.payment_status)) + ' · ' + escapeHTML(orderStatusLabel(order.order_status)) + '</p><p class="text-xs text-gray-400 mt-1">' + escapeHTML(new Date(order.created_at).toLocaleString('id-ID')) + '</p></div></div><p class="text-sm mt-3">' + itemText + '</p><p class="text-xs text-gray-500 mt-2">' + shipText + '</p>' + (order.notes ? '<p class="text-xs text-gray-500 mt-1">Catatan: ' + escapeHTML(order.notes) + '</p>' : '') + '<div class="mt-4 border-t border-gray-100 pt-4"><label class="text-xs font-bold block mb-1">Status pesanan</label><select id="admin-status-' + orderId + '" class="w-full border border-gray-200 rounded-lg p-2 text-sm">' + statusOptions + '</select>' + courierFields + shippingStatus + saveButton + confirmButton + '</div></article>';
                 }).join('');
             } catch (error) {
                 console.error('Gagal memuat pesanan:', error);
@@ -1499,6 +1607,65 @@
             }
         }
         window.confirmQrisOrder = confirmQrisOrder;
+
+
+        async function saveOrderFulfillment(orderId, shippingRequired, shippingConfirmed, subtotal) {
+            if (!supabaseClient || !APP_STATE.user) {
+                showToast('Masuk sebagai admin untuk mengubah status pesanan.', 'error');
+                return;
+            }
+            const statusEl = document.getElementById('admin-status-' + orderId);
+            if (!statusEl) return;
+            const status = statusEl.value;
+            const trackingInput = document.getElementById('admin-tracking-' + orderId);
+            const courierInput = document.getElementById('admin-courier-' + orderId);
+            const costInput = document.getElementById('admin-shipcost-' + orderId);
+            const tracking = trackingInput ? trackingInput.value.trim() : '';
+            const courier = courierInput ? courierInput.value.trim() : '';
+            if (shippingRequired && status === 'shipped' && !tracking) {
+                showToast('Isi nomor resi sebelum mengubah status menjadi Dikirim.', 'error');
+                trackingInput?.focus();
+                return;
+            }
+            const patch = {
+                order_status: status,
+                shipping_courier: courier || null,
+                tracking_number: tracking || null,
+                updated_at: new Date().toISOString()
+            };
+            if (status === 'shipped') patch.shipped_at = new Date().toISOString();
+            if (status === 'delivered') patch.delivered_at = new Date().toISOString();
+            if (shippingRequired && costInput) {
+                const shippingCost = Number(costInput.value);
+                if (!Number.isFinite(shippingCost) || shippingCost < 0) {
+                    showToast('Biaya ongkir harus berupa angka nol atau lebih.', 'error');
+                    costInput.focus();
+                    return;
+                }
+                patch.shipping_cost = Math.round(shippingCost);
+                patch.total = Number(subtotal) + Math.round(shippingCost);
+                patch.shipping_confirmed = true;
+                if (!shippingConfirmed && status === 'new') patch.order_status = 'awaiting_payment';
+            }
+            if (!confirm(shippingRequired && !shippingConfirmed
+                ? 'Simpan biaya ongkir dan total final? Pelanggan dapat melihat QRIS dari halaman cek pesanan setelah ini.'
+                : 'Simpan perubahan status dan informasi pengiriman?')) return;
+            try {
+                const { data, error } = await supabaseClient.from('orders')
+                    .update(patch)
+                    .eq('id', orderId)
+                    .select('id')
+                    .maybeSingle();
+                if (error) throw error;
+                if (!data) throw new Error('Pesanan tidak diperbarui. Pastikan akun admin memiliki izin.');
+                showToast(shippingRequired && !shippingConfirmed ? 'Ongkir dikonfirmasi. Pelanggan kini dapat membayar dari halaman cek status.' : 'Status dan informasi pengiriman diperbarui.');
+                await viewAdminOrders();
+            } catch (error) {
+                console.error('Gagal menyimpan status pengiriman:', error);
+                showToast(error.message || 'Gagal menyimpan pembaruan pesanan.', 'error');
+            }
+        }
+        window.saveOrderFulfillment = saveOrderFulfillment;
 
         function toggleAdminSettings(event) {
             event?.preventDefault();
