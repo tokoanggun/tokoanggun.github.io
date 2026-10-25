@@ -1557,7 +1557,7 @@ let supabaseClient = null;
                     const itemText = (grouped[order.id] || []).map(item => escapeHTML(item.product_name) + ' × ' + item.quantity).join(', ') || 'Rincian tidak tersedia';
                     const shipText = order.shipping_required ? 'Dikirim: ' + escapeHTML(order.shipping_address || '') + ' (' + escapeHTML(order.shipping_method || 'Belum ditentukan') + ')' : 'Ambil sendiri';
                     const paymentText = order.payment_method === 'qris_manual' ? 'QRIS manual' : (order.payment_method || 'Belum dipilih');
-                    const canConfirmQris = order.payment_method === 'qris_manual' && !order.shipping_required && order.payment_status !== 'paid';
+                    const canConfirmQris = order.payment_method === 'qris_manual' && order.payment_status !== 'paid' && (!order.shipping_required || order.shipping_confirmed);
                     const confirmButton = canConfirmQris ? '<button type="button" onclick="confirmQrisOrder(&quot;' + escapeHTML(order.id) + '&quot;)" class="mt-3 bg-primary hover:bg-primaryHover text-white text-xs px-4 py-2 rounded-lg font-bold">Konfirmasi pembayaran diterima</button>' : '';
                     const currentStatus = order.order_status || 'new';
                     const statusOptions = [
@@ -1592,8 +1592,15 @@ let supabaseClient = null;
             }
             if (!confirm('Pastikan dana QRIS benar-benar sudah masuk sebelum menandai pesanan ini lunas. Lanjutkan?')) return;
             try {
+                const { data: currentOrder, error: readError } = await supabaseClient.from('orders')
+                    .select('order_status')
+                    .eq('id', orderId)
+                    .maybeSingle();
+                if (readError) throw readError;
+                if (!currentOrder) throw new Error('Pesanan tidak ditemukan.');
+                const nextStatus = ['new', 'awaiting_payment'].includes(currentOrder.order_status) ? 'processing' : currentOrder.order_status;
                 const { data, error } = await supabaseClient.from('orders')
-                    .update({ payment_status: 'paid', order_status: 'processing', updated_at: new Date().toISOString() })
+                    .update({ payment_status: 'paid', order_status: nextStatus, updated_at: new Date().toISOString() })
                     .eq('id', orderId)
                     .select('id')
                     .maybeSingle();
