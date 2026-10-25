@@ -1275,7 +1275,7 @@
                         <div id="shipping-fields" class="hidden space-y-4"><div><label class="block text-sm font-bold mb-2" for="checkout-address">Alamat lengkap *</label><textarea id="checkout-address" rows="3" maxlength="1000" class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none" placeholder="Jalan, nomor rumah, kelurahan, kecamatan, kota, kode pos"></textarea></div>
                         <div><label class="block text-sm font-bold mb-2" for="checkout-shipping-method">Pilihan pengiriman</label><select id="checkout-shipping-method" class="w-full border border-gray-200 rounded-xl p-3"><option value="Konfirmasi admin">Konfirmasi ongkir oleh admin</option><option value="Kurir toko">Kurir toko (jika tersedia)</option><option value="Ekspedisi">Ekspedisi / kurir pihak ketiga</option></select><p class="text-xs text-gray-500 mt-2">Ongkir belum dihitung otomatis. Admin mengonfirmasi biaya kirim sebelum pembayaran final.</p></div></div>
                         <div><label class="block text-sm font-bold mb-2" for="checkout-notes">Catatan pesanan (opsional)</label><textarea id="checkout-notes" rows="2" maxlength="1000" class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none" placeholder="Warna, waktu pengambilan, atau catatan lainnya"></textarea></div>
-                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900"><b>Pembayaran bank & QRIS</b><p class="mt-1">Checkout disiapkan untuk Midtrans (virtual account berbagai bank dan QRIS). Link pembayaran baru muncul setelah kredensial merchant Midtrans dipasang di Supabase.</p></div>
+                        <div class="bg-lightpink/40 border border-lightpink rounded-xl p-4 text-sm text-dark"><b><i class="ph-fill ph-qr-code text-primary"></i> Metode pembayaran: QRIS manual</b><p class="mt-1">Setelah pesanan dibuat, pindai QRIS Toko Anggun dan bayar sesuai nominal pesanan. Pembayaran baru dianggap lunas setelah admin memverifikasi dana masuk.</p></div>
                         <div id="checkout-error" class="hidden bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700" role="alert"></div><button id="checkout-submit" type="submit" class="w-full bg-primary hover:bg-primaryHover text-white rounded-xl p-4 font-bold">Buat Pesanan</button>
                     </form>
                     <aside class="bg-white rounded-2xl border border-gray-100 p-6 h-fit"><h2 class="font-bold text-xl mb-4">Ringkasan Pesanan</h2><div class="space-y-3">${validItems.map(({item,product}) => `<div class="flex justify-between gap-3 text-sm"><span>${escapeHTML(product.name)} × ${item.quantity}</span><b class="text-right">${formatRupiah(cartLinePrice(item,product))}</b></div>`).join('')}</div><div class="border-t mt-5 pt-4 flex justify-between"><span class="text-gray-500">Subtotal</span><b>${formatRupiah(subtotal)}</b></div><div class="flex justify-between mt-2 text-sm"><span class="text-gray-500">Ongkir</span><span>Konfirmasi bila dikirim</span></div><div class="border-t mt-4 pt-4 flex justify-between text-lg"><b>Total sementara</b><b class="text-primary">${formatRupiah(subtotal)}</b></div><p class="text-xs text-gray-500 mt-4">Pesanan dibuat di website, bukan melalui WhatsApp.</p></aside>
@@ -1298,6 +1298,7 @@
                 shipping_address: shippingRequired ? document.getElementById('checkout-address').value.trim() : '',
                 shipping_method: shippingRequired ? document.getElementById('checkout-shipping-method').value : '',
                 notes: document.getElementById('checkout-notes').value.trim(),
+                payment_method: 'qris_manual',
                 items: validItems.map(({item}) => ({ id: item.id, quantity: item.quantity, addons: item.addons || [] }))
             };
             button.disabled = true; button.textContent = 'Menyimpan pesanan…'; errorBox.classList.add('hidden');
@@ -1318,14 +1319,23 @@
             }
         }
         function renderOrderResult(container, result) {
-            container.innerHTML = `<section class="bg-base min-h-[70vh] py-16 px-4"><div class="max-w-xl mx-auto bg-white rounded-3xl border border-gray-100 p-8 sm:p-10 text-center">
-                <div class="w-16 h-16 rounded-full bg-green-50 text-green-700 flex items-center justify-center mx-auto"><i class="ph ph-check-circle text-4xl"></i></div><h1 class="font-heading text-3xl font-bold mt-5">Pesanan berhasil dibuat</h1><p class="text-gray-500 mt-2">Simpan nomor pesanan berikut untuk referensi.</p>
-                <div class="bg-base rounded-xl p-4 mt-5"><p class="text-xs text-gray-500">Nomor pesanan</p><p class="text-xl font-bold text-primary mt-1">${escapeHTML(result.order_number || '-')}</p><p class="text-lg font-bold mt-2">${formatRupiah(result.total || 0)}</p></div>
-                ${result.payment_setup_required ? '<div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-4 mt-5 text-left text-sm"><b>Langkah berikutnya diperlukan</b><p class="mt-1">' + escapeHTML(result.message || 'Pembayaran online belum dikonfigurasi.') + '</p></div>' : '<p class="text-sm text-gray-600 mt-4">Membuka halaman pembayaran aman…</p>'}
-                <p class="text-sm text-gray-500 mt-4">Jika memilih pengiriman, biaya kirim akan dikonfirmasi terpisah sebelum pembayaran final.</p><div class="flex flex-col sm:flex-row gap-3 mt-6"><a href="#catalog" class="flex-1 bg-primary text-white rounded-xl p-3 font-bold">Lanjut Belanja</a><a href="#home" class="flex-1 border border-gray-200 rounded-xl p-3 font-bold">Beranda</a></div>
-            </div></section>`;
-        }
+            const waitingShipping = result.shipping_required === true;
+            const manualQris = result.manual_payment_required === true && !waitingShipping;
+            const totalLabel = waitingShipping ? 'Subtotal sementara (belum termasuk ongkir)' : 'Total pesanan';
+            let paymentContent = '';
 
+            if (waitingShipping) {
+                paymentContent = '<div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-4 mt-5 text-left text-sm"><b>Menunggu konfirmasi ongkir</b><p class="mt-1">' + escapeHTML(result.message || 'Pesanan tersimpan. Admin perlu mengonfirmasi ongkir sebelum pembayaran.') + '</p><p class="mt-2">Jangan membayar dulu karena total ini belum termasuk ongkir. Admin akan menindaklanjuti melalui nomor HP yang kamu isi.</p></div>';
+            } else if (manualQris) {
+                paymentContent = '<div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 mt-6 text-left"><h2 class="font-bold text-xl text-center">Pembayaran QRIS</h2><p class="text-sm text-gray-600 text-center mt-2">Buka aplikasi bank atau dompet digital yang mendukung QRIS, lalu pindai kode berikut.</p><div class="max-w-sm mx-auto mt-5 p-3 bg-white border border-gray-100 rounded-xl"><img src="https://tokoanggun.github.io/assets/qris.png?v=20261025" alt="QRIS Toko Anggun untuk pembayaran" class="w-full h-auto" loading="eager"><p class="text-xs text-gray-500 text-center mt-2">NMID: ID1026581707373 · Kode: A01</p></div><div class="bg-base rounded-xl p-4 mt-4"><p class="text-sm text-gray-600">Nominal yang harus dibayar</p><p class="text-2xl font-bold text-primary mt-1">' + formatRupiah(result.total || 0) + '</p><p class="text-xs text-gray-500 mt-2">Masukkan nominal tepat di atas jika aplikasi pembayaran memintanya.</p></div><ol class="list-decimal pl-5 mt-4 space-y-2 text-sm text-gray-700"><li>Pastikan nama penerima yang muncul di aplikasi sesuai dengan pemilik QRIS.</li><li>Selesaikan pembayaran dan simpan bukti transaksi.</li><li>Admin akan memeriksa dana masuk dan memperbarui status pesanan. Halaman ini tidak otomatis menandai pembayaran sebagai lunas.</li></ol></div>';
+            } else if (result.payment_setup_required) {
+                paymentContent = '<div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-4 mt-5 text-left text-sm"><b>Langkah berikutnya diperlukan</b><p class="mt-1">' + escapeHTML(result.message || 'Pembayaran belum dapat dilanjutkan.') + '</p></div>';
+            } else {
+                paymentContent = '<p class="text-sm text-gray-600 mt-4">Membuka halaman pembayaran aman…</p>';
+            }
+
+            container.innerHTML = '<section class="bg-base min-h-[70vh] py-12 px-4"><div class="max-w-2xl mx-auto bg-white rounded-3xl border border-gray-100 p-6 sm:p-10 text-center"><div class="w-16 h-16 rounded-full bg-green-50 text-green-700 flex items-center justify-center mx-auto"><i class="ph ph-check-circle text-4xl"></i></div><h1 class="font-heading text-3xl font-bold mt-5">Pesanan berhasil dibuat</h1><p class="text-gray-500 mt-2">Simpan nomor pesanan berikut untuk referensi.</p><div class="bg-base rounded-xl p-4 mt-5"><p class="text-xs text-gray-500">Nomor pesanan</p><p class="text-xl font-bold text-primary mt-1 break-all">' + escapeHTML(result.order_number || '-') + '</p><p class="text-xs text-gray-500 mt-3">' + totalLabel + '</p><p class="text-lg font-bold mt-1">' + formatRupiah(result.total || 0) + '</p></div>' + paymentContent + '<p class="text-sm text-gray-500 mt-5">Jika ada kendala, simpan nomor pesanan dan bukti pembayaran untuk pengecekan admin.</p><div class="flex flex-col sm:flex-row gap-3 mt-6"><a href="#catalog" class="flex-1 bg-primary text-white rounded-xl p-3 font-bold">Lanjut Belanja</a><a href="#home" class="flex-1 border border-gray-200 rounded-xl p-3 font-bold">Beranda</a></div></div></section>';
+        }
         // D. ADMIN LOGIN
         async function renderAdminLogin(container) {
             const template = document.getElementById('tpl-admin-login').content.cloneNode(true);
@@ -1443,13 +1453,40 @@
                 list.innerHTML = orders.map(order => {
                     const itemText = (grouped[order.id] || []).map(item => escapeHTML(item.product_name) + ' × ' + item.quantity).join(', ') || 'Rincian tidak tersedia';
                     const shipText = order.shipping_required ? 'Dikirim: ' + escapeHTML(order.shipping_address || '') + ' (' + escapeHTML(order.shipping_method || 'Belum ditentukan') + ')' : 'Ambil sendiri';
-                    return '<article class="border border-gray-100 rounded-xl p-4 mb-3"><div class="flex flex-col sm:flex-row sm:justify-between gap-3"><div><p class="font-bold text-primary">' + escapeHTML(order.order_number) + '</p><p class="font-semibold mt-1">' + escapeHTML(order.customer_name) + '</p><p class="text-sm text-gray-500">' + escapeHTML(order.customer_phone) + (order.customer_email ? ' · ' + escapeHTML(order.customer_email) : '') + '</p></div><div class="sm:text-right"><p class="font-bold text-lg">' + formatRupiah(order.total) + '</p><p class="text-xs text-gray-500">' + escapeHTML(order.payment_status) + ' · ' + escapeHTML(order.order_status) + '</p><p class="text-xs text-gray-400 mt-1">' + escapeHTML(new Date(order.created_at).toLocaleString('id-ID')) + '</p></div></div><p class="text-sm mt-3">' + itemText + '</p><p class="text-xs text-gray-500 mt-2">' + shipText + '</p>' + (order.notes ? '<p class="text-xs text-gray-500 mt-1">Catatan: ' + escapeHTML(order.notes) + '</p>' : '') + '</article>';
+                    const paymentText = order.payment_method === 'qris_manual' ? 'QRIS manual' : (order.payment_method || 'Belum dipilih');
+                    const canConfirmQris = order.payment_method === 'qris_manual' && !order.shipping_required && order.payment_status !== 'paid';
+                    const confirmButton = canConfirmQris ? '<button type="button" onclick="confirmQrisOrder(&quot;' + escapeHTML(order.id) + '&quot;)" class="mt-3 bg-primary hover:bg-primaryHover text-white text-xs px-4 py-2 rounded-lg font-bold">Konfirmasi pembayaran diterima</button>' : '';
+                    return '<article class="border border-gray-100 rounded-xl p-4 mb-3"><div class="flex flex-col sm:flex-row sm:justify-between gap-3"><div><p class="font-bold text-primary">' + escapeHTML(order.order_number) + '</p><p class="font-semibold mt-1">' + escapeHTML(order.customer_name) + '</p><p class="text-sm text-gray-500">' + escapeHTML(order.customer_phone) + (order.customer_email ? ' · ' + escapeHTML(order.customer_email) : '') + '</p><p class="text-xs text-gray-500 mt-1">Metode: ' + escapeHTML(paymentText) + '</p></div><div class="sm:text-right"><p class="font-bold text-lg">' + formatRupiah(order.total) + '</p><p class="text-xs text-gray-500">' + escapeHTML(order.payment_status) + ' · ' + escapeHTML(order.order_status) + '</p><p class="text-xs text-gray-400 mt-1">' + escapeHTML(new Date(order.created_at).toLocaleString('id-ID')) + '</p></div></div><p class="text-sm mt-3">' + itemText + '</p><p class="text-xs text-gray-500 mt-2">' + shipText + '</p>' + (order.notes ? '<p class="text-xs text-gray-500 mt-1">Catatan: ' + escapeHTML(order.notes) + '</p>' : '') + confirmButton + '</article>';
                 }).join('');
             } catch (error) {
                 console.error('Gagal memuat pesanan:', error);
                 list.innerHTML = '<div class="bg-red-50 text-red-700 rounded-xl p-4 text-sm">Pesanan gagal dimuat. Pastikan akun admin sudah terdaftar di public.admin_users dan tabel orders tersedia.</div>';
             }
         }
+
+
+        async function confirmQrisOrder(orderId) {
+            if (!supabaseClient || !APP_STATE.user) {
+                showToast('Masuk sebagai admin untuk mengonfirmasi pembayaran.', 'error');
+                return;
+            }
+            if (!confirm('Pastikan dana QRIS benar-benar sudah masuk sebelum menandai pesanan ini lunas. Lanjutkan?')) return;
+            try {
+                const { data, error } = await supabaseClient.from('orders')
+                    .update({ payment_status: 'paid', order_status: 'processing', updated_at: new Date().toISOString() })
+                    .eq('id', orderId)
+                    .select('id')
+                    .maybeSingle();
+                if (error) throw error;
+                if (!data) throw new Error('Pesanan tidak diperbarui. Pastikan akun admin memiliki izin.');
+                showToast('Pembayaran ditandai lunas.');
+                await viewAdminOrders();
+            } catch (error) {
+                console.error('Gagal mengonfirmasi QRIS:', error);
+                showToast(error.message || 'Gagal mengonfirmasi pembayaran.', 'error');
+            }
+        }
+        window.confirmQrisOrder = confirmQrisOrder;
 
         function toggleAdminSettings(event) {
             event?.preventDefault();
