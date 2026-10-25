@@ -416,6 +416,7 @@
                 <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
                     <p class="px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2 mt-2">Menu Utama</p>
                     <button type="button" onclick="goToAdminProducts(event)" class="w-full text-left flex items-center gap-3 bg-white/10 px-4 py-3 rounded-xl text-white font-medium shadow-sm hover:bg-white/15 transition"><i class="ph-fill ph-package text-xl text-accent"></i> Produk & Jasa</button>
+                    <button type="button" onclick="viewAdminOrders(event)" class="w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-receipt text-xl"></i> Pesanan Masuk</button>
                     <button type="button" onclick="toggleAdminSettings(event)" aria-controls="settings-body" class="w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-gear text-xl"></i> Pengaturan Web</button>
                     
                     <p class="px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2 mt-8">Tautan Cepat</p>
@@ -538,6 +539,10 @@
                             </table>
                         </div>
                     </div>
+                    <section id="admin-orders-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+                        <div class="px-6 py-5 border-b border-gray-100"><h2 class="font-heading text-xl font-bold">Pesanan Masuk</h2><p class="text-sm text-gray-500 mt-1">Pesanan checkout dari website, tanpa dialihkan ke WhatsApp.</p></div>
+                        <div id="admin-orders-list" class="p-6"><div class="loader mx-auto"></div></div>
+                    </section>
                 </div>
             </main>
         </div>
@@ -1404,14 +1409,54 @@
         function goToAdminProducts(event) {
             event?.preventDefault();
             const settings = document.getElementById('settings-body');
-            if (settings) settings.classList.add('hidden');
+            const orders = document.getElementById('admin-orders-panel');
             const panel = document.getElementById('admin-products-panel');
-            if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (settings) settings.classList.add('hidden');
+            if (orders) orders.classList.add('hidden');
+            if (panel) { panel.classList.remove('hidden'); panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
             closeAdminSidebarOnMobile();
+        }
+
+        async function viewAdminOrders(event) {
+            event?.preventDefault();
+            document.getElementById('settings-body')?.classList.add('hidden');
+            document.getElementById('admin-products-panel')?.classList.add('hidden');
+            const panel = document.getElementById('admin-orders-panel');
+            if (!panel) return;
+            panel.classList.remove('hidden');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            closeAdminSidebarOnMobile();
+            const list = document.getElementById('admin-orders-list');
+            list.innerHTML = '<div class="loader mx-auto"></div>';
+            try {
+                const { data: orders, error } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false }).limit(100);
+                if (error) throw error;
+                if (!orders || orders.length === 0) {
+                    list.innerHTML = '<div class="text-center py-10"><i class="ph ph-receipt text-4xl text-gray-300"></i><p class="font-bold mt-3">Belum ada pesanan</p><p class="text-sm text-gray-500 mt-1">Pesanan baru akan muncul di sini setelah pelanggan checkout.</p></div>';
+                    return;
+                }
+                const ids = orders.map(o => o.id);
+                const { data: items, error: itemsError } = await supabaseClient.from('order_items').select('*').in('order_id', ids);
+                if (itemsError) throw itemsError;
+                const grouped = {};
+                (items || []).forEach(item => { (grouped[item.order_id] ||= []).push(item); });
+                list.innerHTML = orders.map(order => {
+                    const itemText = (grouped[order.id] || []).map(item => escapeHTML(item.product_name) + ' × ' + item.quantity).join(', ') || 'Rincian tidak tersedia';
+                    const shipText = order.shipping_required ? 'Dikirim: ' + escapeHTML(order.shipping_address || '') + ' (' + escapeHTML(order.shipping_method || 'Belum ditentukan') + ')' : 'Ambil sendiri';
+                    return '<article class="border border-gray-100 rounded-xl p-4 mb-3"><div class="flex flex-col sm:flex-row sm:justify-between gap-3"><div><p class="font-bold text-primary">' + escapeHTML(order.order_number) + '</p><p class="font-semibold mt-1">' + escapeHTML(order.customer_name) + '</p><p class="text-sm text-gray-500">' + escapeHTML(order.customer_phone) + (order.customer_email ? ' · ' + escapeHTML(order.customer_email) : '') + '</p></div><div class="sm:text-right"><p class="font-bold text-lg">' + formatRupiah(order.total) + '</p><p class="text-xs text-gray-500">' + escapeHTML(order.payment_status) + ' · ' + escapeHTML(order.order_status) + '</p><p class="text-xs text-gray-400 mt-1">' + escapeHTML(new Date(order.created_at).toLocaleString('id-ID')) + '</p></div></div><p class="text-sm mt-3">' + itemText + '</p><p class="text-xs text-gray-500 mt-2">' + shipText + '</p>' + (order.notes ? '<p class="text-xs text-gray-500 mt-1">Catatan: ' + escapeHTML(order.notes) + '</p>' : '') + '</article>';
+                }).join('');
+            } catch (error) {
+                console.error('Gagal memuat pesanan:', error);
+                list.innerHTML = '<div class="bg-red-50 text-red-700 rounded-xl p-4 text-sm">Pesanan gagal dimuat. Pastikan akun admin sudah terdaftar di public.admin_users dan tabel orders tersedia.</div>';
+            }
         }
 
         function toggleAdminSettings(event) {
             event?.preventDefault();
+            const orders = document.getElementById('admin-orders-panel');
+            const products = document.getElementById('admin-products-panel');
+            if (orders) orders.classList.add('hidden');
+            if (products) products.classList.remove('hidden');
             const settings = document.getElementById('settings-body');
             if (!settings) return;
             const opening = settings.classList.contains('hidden');
