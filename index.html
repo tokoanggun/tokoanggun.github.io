@@ -862,6 +862,7 @@
                 // 3. Render loading immediately. Network requests must never block the UI.
                 appContent.innerHTML = '<div class="flex-grow flex justify-center items-center w-full h-[60vh]"><div class="loader" role="status" aria-label="Memuat halaman"></div></div>';
                 window.scrollTo(0, 0);
+                updateCartCount();
 
                 // Load settings in the background; never await this before rendering the page.
                 // A slow Supabase connection must not leave the entire main area blank.
@@ -881,8 +882,10 @@
                     const id = params.get('id');
                     await renderDetail(appContent, id);
                 } else if (baseHash === '#cart') {
+                    if (APP_STATE.products.length === 0) await fetchProducts();
                     renderCart(appContent);
                 } else if (baseHash === '#checkout') {
+                    if (APP_STATE.products.length === 0) await fetchProducts();
                     renderCheckout(appContent);
                 } else if (baseHash === '#admin') {
                     const user = await checkAuth();
