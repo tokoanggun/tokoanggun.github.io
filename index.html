@@ -615,6 +615,25 @@
                 <div id="detail-content" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 p-6 lg:p-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
                     <div class="col-span-full flex justify-center py-20"><div class="loader"></div></div>
                 </div>
+                <section id="product-reviews" class="mt-8 bg-white rounded-[2rem] border border-gray-100 shadow-sm p-5 sm:p-8" aria-labelledby="product-reviews-title">
+                    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+                        <div><p class="text-xs font-bold tracking-[0.2em] uppercase text-accent">Pengalaman Pelanggan</p><h2 id="product-reviews-title" class="font-heading text-2xl sm:text-3xl font-bold text-dark mt-2">Ulasan Produk</h2><p class="text-sm text-graytext mt-2">Baca ulasan pembeli atau bagikan pengalaman setelah mencoba produk ini.</p></div>
+                        <div id="product-review-summary" class="rounded-2xl bg-base border border-lightpink px-4 py-3 text-sm text-dark" aria-live="polite">Memuat ulasan…</div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8">
+                        <div class="lg:col-span-2 rounded-2xl bg-base border border-lightpink p-5 sm:p-6">
+                            <h3 class="font-bold text-dark text-lg mb-1">Tulis ulasan</h3><p class="text-xs text-graytext mb-4">Ulasan akan diperiksa sebelum ditampilkan agar halaman tetap relevan dan tepercaya.</p>
+                            <form id="product-review-form" class="space-y-4">
+                                <input type="hidden" id="product-review-product-id" value="">
+                                <div><label for="product-review-name" class="block text-sm font-semibold text-dark mb-1.5">Nama tampilan</label><input id="product-review-name" name="reviewer_name" required minlength="2" maxlength="80" autocomplete="name" placeholder="Nama Anda" class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"></div>
+                                <div><label for="product-review-rating" class="block text-sm font-semibold text-dark mb-1.5">Penilaian</label><select id="product-review-rating" name="rating" required class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"><option value="">Pilih bintang</option><option value="5">★★★★★ — Sangat puas</option><option value="4">★★★★☆ — Puas</option><option value="3">★★★☆☆ — Cukup</option><option value="2">★★☆☆☆ — Kurang puas</option><option value="1">★☆☆☆☆ — Tidak puas</option></select></div>
+                                <div><label for="product-review-text" class="block text-sm font-semibold text-dark mb-1.5">Ulasan Anda</label><textarea id="product-review-text" name="review_text" required minlength="5" maxlength="1200" rows="4" placeholder="Ceritakan kualitas bahan, ukuran, atau pengalaman Anda…" class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y"></textarea><p class="text-xs text-gray-500 mt-1">5–1.200 karakter. Jangan sertakan informasi pribadi.</p></div>
+                                <button id="product-review-submit" type="submit" class="w-full bg-primary hover:bg-primaryHover text-white py-3 rounded-xl font-bold transition flex items-center justify-center gap-2"><i class="ph ph-paper-plane-tilt"></i> Kirim ulasan</button><p id="product-review-feedback" class="text-sm text-graytext" role="status" aria-live="polite"></p>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-3"><div id="product-review-list" class="space-y-4"><div class="rounded-2xl border border-gray-100 p-5 text-sm text-graytext">Memuat ulasan pembeli…</div></div></div>
+                    </div>
+                </section>
             </div>
         </div>
     </template>
