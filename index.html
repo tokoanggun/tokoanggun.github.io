@@ -1471,6 +1471,13 @@ let supabaseClient = null;
                 </div>
             `;
 
+            // Load approved reviews and bind the product review form.
+            loadProductReviews(product.id);
+            const reviewForm = document.getElementById('product-review-form');
+            if (reviewForm) {
+                document.getElementById('product-review-product-id').value = product.id;
+                reviewForm.addEventListener('submit', submitProductReview);
+            }
             // Logic untuk form ucapan
             document.getElementById('addon-card')?.addEventListener('change', function() {
                 const input = document.getElementById('addon-card-text');
@@ -1484,6 +1491,70 @@ let supabaseClient = null;
             });
         }
 
+        function renderReviewStars(rating) {
+            const value = Math.max(1, Math.min(5, Number(rating) || 0));
+            return '<span class="text-amber-500 tracking-wider" aria-label="' + value + ' dari 5 bintang">' + '★'.repeat(value) + '<span class="text-gray-300">' + '★'.repeat(5 - value) + '</span></span>';
+        }
+
+        async function loadProductReviews(productId) {
+            const list = document.getElementById('product-review-list');
+            const summary = document.getElementById('product-review-summary');
+            if (!list || !summary || !supabaseClient) return;
+            list.innerHTML = '<div class="rounded-2xl border border-gray-100 p-5 text-sm text-graytext">Memuat ulasan pembeli…</div>';
+            try {
+                const { data, error } = await supabaseClient.from('product_reviews').select('id, reviewer_name, rating, review_text, created_at').eq('product_id', productId).eq('is_approved', true).order('created_at', { ascending: false }).limit(50);
+                if (error) throw error;
+                const reviews = data || [];
+                if (!reviews.length) {
+                    summary.innerHTML = '<span class="font-semibold">Belum ada ulasan</span><span class="block text-xs text-graytext mt-1">Jadilah yang pertama berbagi pengalaman.</span>';
+                    list.innerHTML = '<div class="rounded-2xl border border-dashed border-lightpink bg-base p-6 sm:p-8 text-center"><i class="ph ph-chat-circle-text text-3xl text-primary"></i><p class="font-bold text-dark mt-3">Belum ada ulasan yang dipublikasikan untuk produk ini.</p><p class="text-sm text-graytext mt-2">Jika sudah mencoba produk ini, pengalaman Anda akan membantu pembeli lain.</p></div>';
+                    return;
+                }
+                const average = reviews.reduce((sum, item) => sum + Number(item.rating || 0), 0) / reviews.length;
+                summary.innerHTML = '<div class="flex items-center gap-2"><span class="text-2xl font-bold text-dark">' + average.toFixed(1) + '</span>' + renderReviewStars(Math.round(average)) + '</div><span class="block text-xs text-graytext mt-1">' + reviews.length + ' ulasan pembeli</span>';
+                list.innerHTML = reviews.map(item => {
+                    const date = item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+                    return '<article class="rounded-2xl border border-gray-100 p-5"><div class="flex flex-wrap items-start justify-between gap-2"><div><p class="font-bold text-dark">' + escapeHTML(item.reviewer_name) + '</p><div class="mt-1">' + renderReviewStars(item.rating) + '</div></div><time class="text-xs text-gray-500">' + escapeHTML(date) + '</time></div><p class="text-sm text-graytext leading-relaxed mt-4 whitespace-pre-line break-words">' + escapeHTML(item.review_text) + '</p></article>';
+                }).join('');
+            } catch (error) {
+                console.error('Gagal memuat ulasan produk:', error);
+                summary.textContent = 'Ulasan belum dapat dimuat';
+                list.innerHTML = '<div class="rounded-2xl border border-gray-100 p-5 text-sm text-graytext">Ulasan belum dapat dimuat saat ini. Silakan coba lagi nanti.</div>';
+            }
+        }
+
+        async function submitProductReview(event) {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const button = document.getElementById('product-review-submit');
+            const feedback = document.getElementById('product-review-feedback');
+            const productId = document.getElementById('product-review-product-id')?.value;
+            const reviewerName = document.getElementById('product-review-name')?.value.trim() || '';
+            const rating = Number(document.getElementById('product-review-rating')?.value);
+            const reviewText = document.getElementById('product-review-text')?.value.trim() || '';
+            if (!supabaseClient) { feedback.textContent = 'Layanan ulasan sedang tidak tersedia. Coba lagi nanti.'; return; }
+            if (!productId || reviewerName.length < 2 || !Number.isInteger(rating) || rating < 1 || rating > 5 || reviewText.length < 5) { feedback.textContent = 'Lengkapi nama, penilaian bintang, dan ulasan terlebih dahulu.'; return; }
+            button.disabled = true;
+            button.classList.add('opacity-60', 'cursor-not-allowed');
+            button.innerHTML = '<i class="ph ph-spinner-gap animate-spin"></i> Mengirim…';
+            feedback.textContent = '';
+            try {
+                const { error } = await supabaseClient.from('product_reviews').insert([{ product_id: productId, reviewer_name: reviewerName, rating: rating, review_text: reviewText, is_approved: false }]);
+                if (error) throw error;
+                form.reset();
+                document.getElementById('product-review-product-id').value = productId;
+                feedback.textContent = 'Terima kasih! Ulasan sudah diterima dan akan tampil setelah ditinjau admin.';
+                showToast('Ulasan berhasil dikirim untuk ditinjau.');
+            } catch (error) {
+                console.error('Gagal mengirim ulasan:', error);
+                feedback.textContent = 'Ulasan belum berhasil dikirim. Periksa koneksi lalu coba kembali.';
+                showToast('Ulasan gagal dikirim. Silakan coba lagi.', 'error');
+            } finally {
+                button.disabled = false;
+                button.classList.remove('opacity-60', 'cursor-not-allowed');
+                button.innerHTML = '<i class="ph ph-paper-plane-tilt"></i> Kirim ulasan';
+            }
+        }
         function showDetailError(container) {
             if(document.getElementById('breadcrumb-name')) document.getElementById('breadcrumb-name').innerText = 'Error';
             container.innerHTML = `
