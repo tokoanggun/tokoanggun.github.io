@@ -356,7 +356,7 @@
                 </div>
                 <div class="text-center md:text-right max-w-sm">
                     <p class="font-semibold text-gray-500">Informasi Legalitas</p>
-                    <p class="mt-1">Informasi NIB akan dicantumkan setelah nomor resmi tersedia.</p>
+                    <p class="mt-1">NIB: 000-000</p>
                 </div>
                 <a href="#admin" onclick="navigateToAdmin(event)" class="hover:text-accent transition">Dashboard Admin</a>
             </div>
@@ -501,7 +501,7 @@
                             <i class="ph ph-identification-card text-primary text-2xl mt-0.5"></i>
                             <div>
                                 <h3 class="font-heading font-bold text-dark text-lg">Informasi Legalitas Usaha</h3>
-                                <p class="text-sm text-graytext mt-1">Informasi NIB akan dicantumkan setelah nomor resmi tersedia.</p>
+                                <p class="text-sm text-graytext mt-1">NIB: 000-000</p>
                             </div>
                         </div>
                     </div>
@@ -509,17 +509,19 @@
                 </div>
             </section>
 
-            <!-- Ulasan pembeli: hanya tampilkan ulasan asli yang telah diberikan pelanggan -->
+            <!-- Ulasan pembeli: tampilkan ulasan yang telah disetujui admin -->
             <section class="py-16 md:py-20 bg-white border-t border-gray-100" id="ulasan">
-                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <span class="text-xs font-bold tracking-[0.25em] uppercase text-accent">Cerita Pelanggan</span>
-                    <h2 class="font-heading text-3xl md:text-4xl font-bold text-dark mt-3">Ulasan Pembeli</h2>
-                    <p class="text-sm text-graytext mt-3 max-w-2xl mx-auto">Kami hanya menampilkan ulasan yang benar-benar diberikan pelanggan. Silakan hubungi kami untuk membaca informasi produk atau mengirimkan ulasan setelah pesanan diterima.</p>
-                    <div class="mt-8 rounded-3xl bg-base border border-lightpink p-6 md:p-8">
-                        <i class="ph ph-chat-circle-text text-3xl text-primary"></i>
-                        <p class="font-bold text-dark mt-3">Bagikan pengalaman belanja Anda</p>
-                        <p class="text-sm text-graytext mt-2">Kami hanya menampilkan ulasan yang diberikan pembeli. Setelah pesanan diterima, hubungi kami untuk menyampaikan ulasan.</p>
-                        <a class="inline-flex items-center justify-center gap-2 mt-5 bg-primary hover:bg-primaryHover text-white font-bold px-5 py-3 rounded-full transition" href="https://wa.me/6285643454205?text=Halo%20Toko%20Anggun%2C%20saya%20ingin%20bertanya%20tentang%20produk." target="_blank" rel="noopener noreferrer"><i class="ph ph-whatsapp-logo text-lg"></i> Tanya melalui WhatsApp</a>
+                <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center">
+                        <span class="text-xs font-bold tracking-[0.25em] uppercase text-accent">Cerita Pelanggan</span>
+                        <h2 class="font-heading text-3xl md:text-4xl font-bold text-dark mt-3">Ulasan Pembeli</h2>
+                        <p class="text-sm text-graytext mt-3 max-w-2xl mx-auto">Pengalaman dan penilaian dari pelanggan Toko Anggun.</p>
+                    </div>
+                    <div id="home-review-list" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="col-span-full rounded-2xl border border-gray-100 p-6 text-center text-sm text-graytext">Memuat ulasan pembeli…</div>
+                    </div>
+                    <div class="text-center mt-8">
+                        <a class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primaryHover text-white font-bold px-5 py-3 rounded-full transition" href="https://wa.me/6285643454205?text=Halo%20Toko%20Anggun%2C%20saya%20ingin%20menyampaikan%20ulasan%20pesanan." target="_blank" rel="noopener noreferrer"><i class="ph ph-whatsapp-logo text-lg"></i> Kirim Ulasan melalui WhatsApp</a>
                     </div>
                 </div>
             </section>
@@ -1245,6 +1247,7 @@ let supabaseClient = null;
             container.appendChild(template);
 
             await fetchProducts();
+            void loadHomepageReviews();
             
             // Race condition preventer
             if (window.location.hash.split('?')[0] !== '#home' && window.location.hash !== '') return;
@@ -1517,7 +1520,43 @@ let supabaseClient = null;
             return '<span class="text-amber-500 tracking-wider" aria-label="' + value + ' dari 5 bintang">' + '★'.repeat(value) + '<span class="text-gray-300">' + '★'.repeat(5 - value) + '</span></span>';
         }
 
-        async function loadProductReviews(productId) {
+                async function loadHomepageReviews() {
+            const list = document.getElementById('home-review-list');
+            if (!list) return;
+            if (!supabaseClient) {
+                list.innerHTML = '<div class="col-span-full rounded-2xl border border-gray-100 p-6 text-center text-sm text-graytext">Ulasan belum dapat dimuat saat ini.</div>';
+                return;
+            }
+            try {
+                const { data, error } = await supabaseClient
+                    .from('product_reviews')
+                    .select('id, reviewer_name, rating, review_text, created_at')
+                    .eq('is_approved', true)
+                    .order('created_at', { ascending: false })
+                    .limit(8);
+                if (error) throw error;
+                const reviews = data || [];
+                if (!reviews.length) {
+                    list.innerHTML = '<div class="col-span-full rounded-2xl border border-dashed border-lightpink bg-base p-8 text-center"><i class="ph ph-chat-circle-text text-3xl text-primary"></i><p class="font-bold text-dark mt-3">Belum ada ulasan yang ditampilkan</p><p class="text-sm text-graytext mt-2">Ulasan pelanggan akan muncul di sini setelah disetujui admin.</p></div>';
+                    return;
+                }
+                list.innerHTML = reviews.map(review => {
+                    const name = escapeHtml(review.reviewer_name || 'Pembeli');
+                    const body = escapeHtml(review.review_text || '');
+                    const date = review.created_at ? new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+                    return '<article class="rounded-2xl border border-lightpink bg-base p-5 sm:p-6">' +
+                        '<div class="flex items-start justify-between gap-3"><p class="font-bold text-dark">' + name + '</p><span class="text-xs text-graytext text-right">' + escapeHtml(date) + '</span></div>' +
+                        '<div class="mt-2">' + renderReviewStars(review.rating) + '</div>' +
+                        '<p class="text-sm text-graytext leading-relaxed mt-3 whitespace-pre-line">' + body + '</p>' +
+                        '</article>';
+                }).join('');
+            } catch (error) {
+                console.error('Gagal memuat ulasan beranda:', error);
+                list.innerHTML = '<div class="col-span-full rounded-2xl border border-gray-100 p-6 text-center text-sm text-graytext">Ulasan belum dapat dimuat saat ini.</div>';
+            }
+        }
+
+async function loadProductReviews(productId) {
             const list = document.getElementById('product-review-list');
             const summary = document.getElementById('product-review-summary');
             if (!list || !summary || !supabaseClient) return;
