@@ -828,7 +828,17 @@
                         </div>
                     </div>
                     <section id="admin-reviews-panel" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-                        <div class="px-6 py-5 border-b border-gray-100"><h2 class="font-heading text-xl font-bold">Moderasi Ulasan Produk</h2><p class="text-sm text-gray-500 mt-1">Periksa ulasan yang masuk sebelum ditampilkan kepada pembeli.</p></div>
+                        <div class="px-6 py-5 border-b border-gray-100"><h2 class="font-heading text-xl font-bold">Kelola Ulasan Produk</h2><p class="text-sm text-gray-500 mt-1">Admin dapat menambahkan ulasan secara manual, menyetujui ulasan pelanggan, atau menghapus ulasan yang tidak sesuai.</p></div>
+                        <div class="p-5 sm:p-6 border-b border-gray-100 bg-base">
+                            <h3 class="font-bold text-dark text-lg mb-4">Tambah ulasan manual</h3>
+                            <form id="admin-review-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label for="admin-review-product" class="block text-sm font-semibold text-dark mb-1.5">Produk</label><select id="admin-review-product" required class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm"><option value="">Pilih produk</option></select></div>
+                                <div><label for="admin-review-name" class="block text-sm font-semibold text-dark mb-1.5">Nama penulis ulasan</label><input id="admin-review-name" required minlength="2" maxlength="80" placeholder="Nama penulis" class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm"></div>
+                                <div><label for="admin-review-rating" class="block text-sm font-semibold text-dark mb-1.5">Penilaian</label><select id="admin-review-rating" required class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm"><option value="">Pilih bintang</option><option value="5">★★★★★ — 5 bintang</option><option value="4">★★★★☆ — 4 bintang</option><option value="3">★★★☆☆ — 3 bintang</option><option value="2">★★☆☆☆ — 2 bintang</option><option value="1">★☆☆☆☆ — 1 bintang</option></select></div>
+                                <div class="md:col-span-2"><label for="admin-review-text" class="block text-sm font-semibold text-dark mb-1.5">Isi ulasan</label><textarea id="admin-review-text" required minlength="5" maxlength="1200" rows="3" placeholder="Isi ulasan berdasarkan masukan pelanggan yang sebenarnya" class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm"></textarea></div>
+                                <div class="md:col-span-2 flex items-center gap-3 flex-wrap"><label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" id="admin-review-approved" class="rounded border-gray-300"> Langsung tampilkan setelah disimpan</label><button id="admin-review-save" type="submit" class="bg-primary text-white px-5 py-3 rounded-xl font-bold"><i class="ph ph-plus-circle mr-1"></i> Tambahkan ulasan</button><p id="admin-review-feedback" class="text-sm text-graytext" role="status" aria-live="polite"></p></div>
+                            </form>
+                        </div>
                         <div id="admin-reviews-list" class="p-5 sm:p-6"><div class="loader mx-auto"></div></div>
                     </section>
                     <section id="admin-orders-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
@@ -2119,6 +2129,7 @@ let supabaseClient = null;
 
             await refreshAdminTable();
             await loadAdminProductReviews();
+            setupAdminReviewForm();
 
             document.getElementById('admin-search')?.addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
@@ -2127,6 +2138,37 @@ let supabaseClient = null;
             });
         }
 
+        function setupAdminReviewForm() {
+            const select = document.getElementById('admin-review-product');
+            const form = document.getElementById('admin-review-form');
+            if (!select || !form) return;
+            const products = APP_STATE.adminProducts || [];
+            select.innerHTML = '<option value="">Pilih produk</option>' + products.map(product => '<option value="' + escapeHTML(product.id) + '">' + escapeHTML(product.name) + '</option>').join('');
+            form.addEventListener('submit', async event => {
+                event.preventDefault();
+                const button = document.getElementById('admin-review-save');
+                const feedback = document.getElementById('admin-review-feedback');
+                const productId = select.value;
+                const reviewerName = document.getElementById('admin-review-name').value.trim();
+                const rating = Number(document.getElementById('admin-review-rating').value);
+                const reviewText = document.getElementById('admin-review-text').value.trim();
+                const approved = document.getElementById('admin-review-approved').checked;
+                if (!supabaseClient || !productId || reviewerName.length < 2 || !Number.isInteger(rating) || rating < 1 || rating > 5 || reviewText.length < 5) { feedback.textContent = 'Lengkapi produk, nama, bintang, dan isi ulasan.'; return; }
+                button.disabled = true; button.classList.add('opacity-60'); feedback.textContent = 'Menyimpan ulasan…';
+                try {
+                    const { error } = await supabaseClient.from('product_reviews').insert([{ product_id: productId, reviewer_name: reviewerName, rating, review_text: reviewText, is_approved: approved }]);
+                    if (error) throw error;
+                    form.reset();
+                    feedback.textContent = 'Ulasan berhasil ditambahkan.';
+                    showToast('Ulasan berhasil ditambahkan.');
+                    await loadAdminProductReviews();
+                } catch (error) {
+                    console.error('Gagal menambahkan ulasan dari admin:', error);
+                    feedback.textContent = 'Gagal menyimpan ulasan. Pastikan sesi admin aktif dan hak akses Supabase tersedia.';
+                    showToast('Ulasan gagal ditambahkan.', 'error');
+                } finally { button.disabled = false; button.classList.remove('opacity-60'); }
+            });
+        }
         async function loadAdminProductReviews() {
             const container = document.getElementById('admin-reviews-list');
             if (!container || !supabaseClient) return;
