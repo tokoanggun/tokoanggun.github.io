@@ -941,7 +941,14 @@
 
                                 <div>
                                     <label class="block text-sm font-bold text-dark mb-2">Deskripsi Lengkap <span class="text-red-500">*</span></label>
-                                    <textarea id="prod-desc" required rows="4" placeholder="Jelaskan rincian produk, ukuran, atau detail lainnya... (Tekan Enter untuk baris baru)" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary transition-colors"></textarea>
+                                    <textarea id="prod-desc" required rows="4" placeholder="Jelaskan rincian produk..." class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary transition-colors"></textarea>
+                                </div>
+                                <div class="rounded-2xl border border-lightpink bg-base/60 p-4 space-y-4">
+                                    <div><h4 class="font-bold text-dark">Info Sebelum Membeli</h4><p class="text-xs text-gray-500 mt-1">Informasi ini akan tampil di halaman detail produk.</p></div>
+                                    <div><label for="prod-size-info" class="block text-sm font-bold text-dark mb-2">Ukuran</label><input id="prod-size-info" maxlength="250" placeholder="Contoh: 115 × 115 cm" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-primary outline-none"></div>
+                                    <div><label for="prod-material-info" class="block text-sm font-bold text-dark mb-2">Bahan</label><input id="prod-material-info" maxlength="250" placeholder="Contoh: Voal premium" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-primary outline-none"></div>
+                                    <div><label for="prod-package-info" class="block text-sm font-bold text-dark mb-2">Isi Paket</label><input id="prod-package-info" maxlength="500" placeholder="Contoh: 1 hijab + kemasan" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-primary outline-none"></div>
+                                    <div><label for="prod-stock-info" class="block text-sm font-bold text-dark mb-2">Informasi Stok</label><input id="prod-stock-info" maxlength="250" placeholder="Contoh: Tersedia / stok terbatas" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-primary outline-none"></div>
                                 </div>
                             </div>
                             
@@ -1443,10 +1450,10 @@ let supabaseClient = null;
                     <div class="mb-6 rounded-2xl border border-lightpink bg-base p-4 sm:p-5">
                         <h4 class="font-bold text-dark mb-3">Informasi Produk</h4>
                         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                            <div><dt class="text-gray-500">Ukuran</dt><dd class="font-semibold text-dark mt-1">${escapeHTML(String(product.size || product.size_label || 'Konfirmasi melalui WhatsApp'))}</dd></div>
-                            <div><dt class="text-gray-500">Bahan</dt><dd class="font-semibold text-dark mt-1">${escapeHTML(String(product.material || product.fabric || 'Konfirmasi melalui WhatsApp'))}</dd></div>
-                            <div><dt class="text-gray-500">Isi paket</dt><dd class="font-semibold text-dark mt-1">${escapeHTML(String(product.package_contents || product.package_content || 'Konfirmasi melalui WhatsApp'))}</dd></div>
-                            <div><dt class="text-gray-500">Stok</dt><dd class="font-semibold text-dark mt-1">${(product.stock_quantity ?? product.stock) !== undefined && (product.stock_quantity ?? product.stock) !== null ? escapeHTML(String((product.stock_quantity ?? product.stock) > 0 ? (product.stock_quantity ?? product.stock) + ' tersedia' : 'Perlu konfirmasi')) : 'Konfirmasi melalui WhatsApp'}</dd></div>
+                            <div><dt class="text-gray-500">Ukuran</dt><dd class="font-semibold text-dark mt-1">${escapeHTML(String(product.size_info || product.size || product.size_label || 'Konfirmasi melalui WhatsApp'))}</dd></div>
+                            <div><dt class="text-gray-500">Bahan</dt><dd class="font-semibold text-dark mt-1">${escapeHTML(String(product.material_info || product.material || product.fabric || 'Konfirmasi melalui WhatsApp'))}</dd></div>
+                            <div><dt class="text-gray-500">Isi paket</dt><dd class="font-semibold text-dark mt-1">${escapeHTML(String(product.package_info || product.package_contents || product.package_content || 'Konfirmasi melalui WhatsApp'))}</dd></div>
+                            <div><dt class="text-gray-500">Stok</dt><dd class="font-semibold text-dark mt-1">${escapeHTML(String(product.stock_info || ((product.stock_quantity ?? product.stock) !== undefined && (product.stock_quantity ?? product.stock) !== null ? ((product.stock_quantity ?? product.stock) > 0 ? (product.stock_quantity ?? product.stock) + ' tersedia' : 'Perlu konfirmasi') : 'Konfirmasi melalui WhatsApp')))}</dd></div>
                         </dl>
                         <a class="inline-flex items-center gap-2 mt-4 text-sm font-bold text-primary underline underline-offset-4" href="https://wa.me/6285643454205?text=${encodeURIComponent('Halo Toko Anggun, saya ingin memastikan ukuran, bahan, isi paket, dan stok untuk produk: ' + (product.name || ''))}" target="_blank" rel="noopener noreferrer"><i class="ph ph-whatsapp-logo text-lg"></i> Konfirmasi detail produk</a>
                     </div>
@@ -2317,6 +2324,10 @@ let supabaseClient = null;
             document.getElementById('prod-cat').value = p.category || '';
             document.getElementById('prod-price').value = p.price || 0;
             document.getElementById('prod-desc').value = p.description || '';
+            document.getElementById('prod-size-info').value = p.size_info || p.size || p.size_label || '';
+            document.getElementById('prod-material-info').value = p.material_info || p.material || p.fabric || '';
+            document.getElementById('prod-package-info').value = p.package_info || p.package_contents || p.package_content || '';
+            document.getElementById('prod-stock-info').value = p.stock_info || '';
             document.getElementById('prod-wa').value = p.whatsapp_message || '';
             document.getElementById('prod-active').checked = p.is_active;
             document.getElementById('prod-featured').checked = p.is_featured;
@@ -2380,6 +2391,10 @@ let supabaseClient = null;
                     category: document.getElementById('prod-cat').value,
                     price: parseFloat(document.getElementById('prod-price').value),
                     description: document.getElementById('prod-desc').value,
+                    size_info: document.getElementById('prod-size-info').value.trim(),
+                    material_info: document.getElementById('prod-material-info').value.trim(),
+                    package_info: document.getElementById('prod-package-info').value.trim(),
+                    stock_info: document.getElementById('prod-stock-info').value.trim(),
                     whatsapp_message: document.getElementById('prod-wa').value,
                     is_active: document.getElementById('prod-active').checked,
                     is_featured: document.getElementById('prod-featured').checked,
