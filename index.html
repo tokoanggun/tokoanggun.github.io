@@ -727,6 +727,7 @@
                     <p class="px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2 mt-2">Menu Utama</p>
                     <button type="button" onclick="goToAdminProducts(event)" class="w-full text-left flex items-center gap-3 bg-white/10 px-4 py-3 rounded-xl text-white font-medium shadow-sm hover:bg-white/15 transition"><i class="ph-fill ph-package text-xl text-accent"></i> Produk & Jasa</button>
                     <button type="button" onclick="viewAdminOrders(event)" class="w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-receipt text-xl"></i> Pesanan Masuk</button>
+                    <button type="button" onclick="viewAdminReturns(event)" class="w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-arrow-u-up-left text-xl"></i> Retur & Penukaran</button>
                     <button type="button" onclick="toggleAdminSettings(event)" aria-controls="settings-body" class="w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-gear text-xl"></i> Pengaturan Web</button>
                     
                     <p class="px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2 mt-8">Tautan Cepat</p>
@@ -866,6 +867,10 @@
                     <section id="admin-orders-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
                         <div class="px-6 py-5 border-b border-gray-100"><h2 class="font-heading text-xl font-bold">Pesanan Masuk</h2><p class="text-sm text-gray-500 mt-1">Pesanan checkout dari website, tanpa dialihkan ke WhatsApp.</p></div>
                         <div id="admin-orders-list" class="p-6"><div class="loader mx-auto"></div></div>
+                    </section>
+                    <section id="admin-returns-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+                        <div class="px-6 py-5 border-b border-gray-100"><h2 class="font-heading text-xl font-bold">Retur, Penukaran & Pembatalan</h2><p class="text-sm text-gray-500 mt-1">Tinjau permintaan pelanggan dan perbarui statusnya. Persetujuan di sini tidak menjalankan pengembalian dana otomatis.</p></div>
+                        <div id="admin-returns-list" class="p-6"><div class="loader mx-auto"></div></div>
                     </section>
                 </div>
             </main>
@@ -2062,9 +2067,11 @@ async function loadProductReviews(productId) {
             event?.preventDefault();
             const settings = document.getElementById('settings-body');
             const orders = document.getElementById('admin-orders-panel');
+            const returns = document.getElementById('admin-returns-panel');
             const panel = document.getElementById('admin-products-panel');
             if (settings) settings.classList.add('hidden');
             if (orders) orders.classList.add('hidden');
+            if (returns) returns.classList.add('hidden');
             if (panel) { panel.classList.remove('hidden'); panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
             closeAdminSidebarOnMobile();
         }
@@ -2073,6 +2080,7 @@ async function loadProductReviews(productId) {
             event?.preventDefault();
             document.getElementById('settings-body')?.classList.add('hidden');
             document.getElementById('admin-products-panel')?.classList.add('hidden');
+            document.getElementById('admin-returns-panel')?.classList.add('hidden');
             const panel = document.getElementById('admin-orders-panel');
             if (!panel) return;
             panel.classList.remove('hidden');
@@ -2123,6 +2131,78 @@ async function loadProductReviews(productId) {
             }
         }
 
+
+
+        async function viewAdminReturns(event) {
+            event?.preventDefault();
+            if (!supabaseClient || !APP_STATE.user) {
+                showToast('Masuk sebagai admin untuk mengelola pengajuan.', 'error');
+                return;
+            }
+            document.getElementById('settings-body')?.classList.add('hidden');
+            document.getElementById('admin-products-panel')?.classList.add('hidden');
+            document.getElementById('admin-orders-panel')?.classList.add('hidden');
+            const panel = document.getElementById('admin-returns-panel');
+            const list = document.getElementById('admin-returns-list');
+            if (!panel || !list) return;
+            panel.classList.remove('hidden');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            closeAdminSidebarOnMobile();
+            list.innerHTML = '<div class="loader mx-auto"></div>';
+            try {
+                const { data, error } = await supabaseClient.from('return_requests').select('*').order('created_at', { ascending: false }).limit(100);
+                if (error) throw error;
+                if (!data?.length) {
+                    list.innerHTML = '<div class="py-10 text-center"><i class="ph ph-arrow-u-up-left text-4xl text-gray-300"></i><p class="font-bold mt-3">Belum ada pengajuan retur</p><p class="text-sm text-gray-500 mt-1">Pengajuan pelanggan akan muncul di sini.</p></div>';
+                    return;
+                }
+                const types = { cancel: 'Pembatalan pesanan', exchange: 'Penukaran produk', return_refund: 'Retur / pengembalian dana' };
+                const statuses = [['submitted','Menunggu ditinjau'],['reviewing','Sedang ditinjau'],['approved','Disetujui — tindak lanjut'],['rejected','Tidak disetujui'],['completed','Selesai']];
+                list.innerHTML = data.map(item => {
+                    const id = escapeHTML(item.id);
+                    const opts = statuses.map(([value,label]) => '<option value="' + value + '"' + (item.status === value ? ' selected' : '') + '>' + label + '</option>').join('');
+                    const date = item.created_at ? new Date(item.created_at).toLocaleString('id-ID') : '-';
+                    return '<article class="mb-4 rounded-2xl border border-gray-100 p-4 sm:p-5"><div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"><div><p class="text-sm font-bold text-primary break-all">' + escapeHTML(item.request_number) + '</p><h3 class="font-bold mt-1">' + escapeHTML(types[item.request_type] || item.request_type) + '</h3><p class="text-xs text-gray-500 mt-1">Pesanan: <b>' + escapeHTML(item.order_number) + '</b> · ' + escapeHTML(date) + '</p><p class="text-sm mt-2">' + escapeHTML(item.customer_name) + ' · ' + escapeHTML(item.customer_phone) + '</p></div><span class="self-start rounded-full bg-lightpink px-3 py-1 text-xs font-bold">' + escapeHTML(returnStatusLabel(item.status)) + '</span></div><div class="mt-4 rounded-xl bg-base p-4"><p class="text-xs font-bold uppercase tracking-wide text-gray-500">Alasan</p><p class="font-semibold mt-1">' + escapeHTML(item.reason) + '</p><p class="text-sm text-gray-600 mt-2 whitespace-pre-line break-words">' + escapeHTML(item.details) + '</p>' + (item.requested_product ? '<p class="text-sm mt-2"><b>Produk pengganti:</b> ' + escapeHTML(item.requested_product) + '</p>' : '') + '</div><div class="mt-4 grid sm:grid-cols-2 gap-3"><div><label class="block text-xs font-bold mb-1" for="admin-return-status-' + id + '">Status pengajuan</label><select id="admin-return-status-' + id + '" class="w-full rounded-lg border border-gray-200 p-3 text-sm">' + opts + '</select></div><div><label class="block text-xs font-bold mb-1" for="admin-return-notes-' + id + '">Catatan admin untuk pelanggan</label><textarea id="admin-return-notes-' + id + '" rows="2" maxlength="1500" class="w-full rounded-lg border border-gray-200 p-3 text-sm" placeholder="Contoh: mohon kirim foto produk / pengembalian dana ditindaklanjuti manual">' + escapeHTML(item.admin_notes || '') + '</textarea></div></div><button type="button" onclick="saveAdminReturnDecision(&quot;' + id + '&quot;)" class="mt-3 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white hover:bg-primaryHover">Simpan keputusan</button><p class="mt-3 text-xs leading-relaxed text-gray-500">Mengubah status di sini hanya mencatat keputusan. Pembatalan pesanan, pengiriman produk pengganti, dan refund uang tetap perlu ditindaklanjuti secara manual.</p></article>';
+                }).join('');
+            } catch (error) {
+                console.error('Gagal memuat pengajuan retur:', error);
+                list.innerHTML = '<div class="rounded-xl bg-red-50 p-4 text-sm text-red-700">Pengajuan tidak dapat dimuat. Pastikan akun admin aktif dan migrasi return_requests berhasil diterapkan.</div>';
+            }
+        }
+
+        async function saveAdminReturnDecision(id) {
+            if (!supabaseClient || !APP_STATE.user) {
+                showToast('Masuk sebagai admin untuk mengubah pengajuan.', 'error');
+                return;
+            }
+            const statusEl = document.getElementById('admin-return-status-' + id);
+            const notesEl = document.getElementById('admin-return-notes-' + id);
+            if (!statusEl || !notesEl) return;
+            const status = statusEl.value;
+            const allowed = ['submitted','reviewing','approved','rejected','completed'];
+            if (!allowed.includes(status)) {
+                showToast('Status pengajuan tidak valid.', 'error');
+                return;
+            }
+            if (!confirm('Simpan status pengajuan menjadi "' + returnStatusLabel(status) + '"? Tindakan refund atau penggantian barang tidak berjalan otomatis.')) return;
+            const now = new Date().toISOString();
+            const patch = { status, admin_notes: notesEl.value.trim() || null, updated_at: now };
+            if (status !== 'submitted') patch.reviewed_at = now;
+            if (['rejected','completed'].includes(status)) patch.resolved_at = now;
+            try {
+                const { data, error } = await supabaseClient.from('return_requests')
+                    .update(patch).eq('id', id).select('id').maybeSingle();
+                if (error) throw error;
+                if (!data) throw new Error('Pengajuan tidak ditemukan atau perubahan tidak diizinkan.');
+                showToast('Status pengajuan berhasil disimpan.');
+                await viewAdminReturns();
+            } catch (error) {
+                console.error('Gagal menyimpan keputusan retur:', error);
+                showToast(error.message || 'Gagal menyimpan status pengajuan.', 'error');
+            }
+        }
+        window.viewAdminReturns = viewAdminReturns;
+        window.saveAdminReturnDecision = saveAdminReturnDecision;
 
         async function confirmQrisOrder(orderId) {
             if (!supabaseClient || !APP_STATE.user) {
@@ -2227,8 +2307,10 @@ async function loadProductReviews(productId) {
         function toggleAdminSettings(event) {
             event?.preventDefault();
             const orders = document.getElementById('admin-orders-panel');
+            const returns = document.getElementById('admin-returns-panel');
             const products = document.getElementById('admin-products-panel');
             if (orders) orders.classList.add('hidden');
+            if (returns) returns.classList.add('hidden');
             if (products) products.classList.remove('hidden');
             const settings = document.getElementById('settings-body');
             if (!settings) return;
