@@ -477,7 +477,7 @@
                         </div>
                         <div class="lg:col-span-3">
                             <div class="rounded-[2rem] bg-gradient-to-br from-lightpink via-white to-[#dce6dc] p-7 md:p-9 min-h-[310px] flex flex-col justify-between border border-white shadow-sm">
-                                <div class="w-28 h-20 sm:w-36 sm:h-24 rounded-2xl bg-white/90 border border-lightpink/70 flex items-center justify-center p-2 shadow-sm"><img src="assets/logo-anggun.webp?v=4" alt="Logo Toko Anggun" class="w-full h-full object-contain" loading="lazy" decoding="async"></div>
+                                <div class="w-28 h-20 sm:w-36 sm:h-24 rounded-2xl bg-white/90 border border-lightpink/70 flex items-center justify-center p-2 shadow-sm"><img src="assets/logo.svg?v=4" alt="Logo Toko Anggun" class="w-full h-full object-contain" loading="lazy" decoding="async"></div>
                                 <div>
                                     <span class="text-xs font-bold uppercase tracking-[0.2em] text-accent">Toko Anggun</span>
                                     <p class="font-heading text-3xl text-dark font-bold mt-2">Hijab untuk Setiap Langkahmu</p>
@@ -1822,7 +1822,7 @@ async function loadProductReviews(productId) {
             }
             const subtotal = validItems.reduce((sum, row) => sum + cartLinePrice(row.item, row.product), 0);
             container.innerHTML = `<section class="bg-base min-h-[70vh] py-10"><div class="max-w-6xl mx-auto px-4 sm:px-6">
-                <div class="mb-8"><a href="#cart" class="text-primary text-sm font-bold">← Kembali ke keranjang</a><div class="mt-4 flex items-center gap-4"><div class="w-24 h-16 sm:w-32 sm:h-20 shrink-0 rounded-2xl border border-lightpink bg-white p-2"><img src="assets/logo-anggun.webp?v=4" alt="Logo Toko Anggun" class="w-full h-full object-contain" loading="lazy" decoding="async"></div><div><h1 class="font-heading text-3xl sm:text-4xl font-bold text-dark">Checkout</h1><p class="text-gray-500 mt-2">Isi data pemesan. Pengiriman bisa dipilih atau dilewati.</p></div></div></div>
+                <div class="mb-8"><a href="#cart" class="text-primary text-sm font-bold">← Kembali ke keranjang</a><div class="mt-4 flex items-center gap-4"><div class="w-24 h-16 sm:w-32 sm:h-20 shrink-0 rounded-2xl border border-lightpink bg-white p-2"><img src="assets/logo.svg?v=4" alt="Logo Toko Anggun" class="w-full h-full object-contain" loading="lazy" decoding="async"></div><div><h1 class="font-heading text-3xl sm:text-4xl font-bold text-dark">Checkout</h1><p class="text-gray-500 mt-2">Isi data pemesan. Pengiriman bisa dipilih atau dilewati.</p></div></div></div>
                 <div class="grid lg:grid-cols-[1.2fr_.8fr] gap-6">
                     <form id="checkout-form" class="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
                         <h2 class="font-bold text-xl">Data Pemesan</h2>
