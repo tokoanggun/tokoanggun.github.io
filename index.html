@@ -1794,6 +1794,77 @@ async function loadProductReviews(productId) {
             }
         }
 
+
+        function returnTypeLabel(type) {
+            return ({ cancel: 'Pembatalan pesanan', exchange: 'Penukaran produk', return_refund: 'Retur / pengembalian dana' })[type] || 'Pengajuan';
+        }
+
+        function returnStatusLabel(status) {
+            return ({ submitted: 'Menunggu ditinjau', reviewing: 'Sedang ditinjau', approved: 'Disetujui — menunggu tindak lanjut', rejected: 'Tidak disetujui', completed: 'Selesai' })[status] || status || 'Belum tersedia';
+        }
+
+        function renderReturnRequestPanel(order) {
+            const requests = Array.isArray(order.return_requests) ? order.return_requests : [];
+            const active = requests.find(request => ['submitted', 'reviewing', 'approved'].includes(request.status));
+            const history = requests.length
+                ? '<div class="mt-4 space-y-3"><h4 class="font-bold text-sm">Riwayat pengajuan</h4>' + requests.map(request =>
+                    '<article class="rounded-xl border border-gray-100 bg-white p-3"><div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2"><div><p class="font-bold text-sm text-primary">' + escapeHTML(request.request_number) + '</p><p class="text-sm font-semibold mt-1">' + escapeHTML(returnTypeLabel(request.request_type)) + '</p><p class="text-xs text-gray-500 mt-1">' + escapeHTML(request.reason) + '</p></div><span class="inline-flex self-start rounded-full bg-lightpink px-3 py-1 text-xs font-bold text-dark">' + escapeHTML(returnStatusLabel(request.status)) + '</span></div><p class="text-xs text-gray-400 mt-2">' + escapeHTML(new Date(request.created_at).toLocaleString('id-ID')) + '</p></article>'
+                  ).join('') + '</div>'
+                : '<p class="text-sm text-gray-600 mt-2">Belum ada pengajuan untuk pesanan ini.</p>';
+            const form = active
+                ? '<div class="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">Masih ada pengajuan aktif <b>' + escapeHTML(active.request_number) + '</b>. Tunggu tanggapan admin sebelum mengirim pengajuan baru.</div>'
+                : '<form id="return-request-form" class="mt-4 rounded-xl border border-gray-100 bg-white p-4 sm:p-5 space-y-4"><input type="hidden" id="return-request-order" value="' + escapeHTML(order.order_number) + '"><div><label for="return-request-type" class="block text-sm font-bold mb-2">Jenis pengajuan *</label><select id="return-request-type" required class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none"><option value="cancel">Batalkan pesanan</option><option value="exchange">Tukar produk / ukuran / warna</option><option value="return_refund">Retur / minta pengembalian dana</option></select></div><div><label for="return-request-reason" class="block text-sm font-bold mb-2">Alasan *</label><select id="return-request-reason" required class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none"><option value="">Pilih alasan</option><option>Berubah pikiran / tidak jadi membeli</option><option>Salah memilih produk</option><option>Ukuran atau warna tidak sesuai</option><option>Produk rusak atau cacat</option><option>Produk yang diterima tidak sesuai</option><option>Alasan lainnya</option></select></div><div id="return-request-product-wrap" class="hidden"><label for="return-request-product" class="block text-sm font-bold mb-2">Produk pengganti yang diinginkan *</label><input id="return-request-product" maxlength="300" class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none" placeholder="Contoh: hijab warna sage, ukuran ..."></div><div><label for="return-request-details" class="block text-sm font-bold mb-2">Detail permintaan *</label><textarea id="return-request-details" rows="3" required minlength="5" maxlength="1500" class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none" placeholder="Jelaskan produk yang ingin diganti atau alasan pembatalan/retur."></textarea></div><div id="return-request-feedback" class="hidden rounded-xl p-3 text-sm" role="status" aria-live="polite"></div><button id="return-request-submit" type="submit" class="w-full sm:w-auto rounded-xl bg-primary px-5 py-3 font-bold text-white hover:bg-primaryHover"><i class="ph ph-paper-plane-tilt mr-2"></i>Kirim pengajuan</button></form>';
+            return '<section class="mt-6 rounded-2xl border border-lightpink bg-base p-4 sm:p-6"><div class="flex items-start gap-3"><span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-lightpink text-primary"><i class="ph ph-arrow-u-up-left text-2xl"></i></span><div><h3 class="font-heading text-xl font-bold text-dark">Retur, penukaran, atau pembatalan</h3><p class="text-sm text-gray-600 mt-1">Ajukan dari sini menggunakan nomor pesanan yang sudah terverifikasi.</p></div></div>' + history + form + '<p class="text-xs leading-relaxed text-gray-500 mt-4">Permintaan akan diperiksa admin. Pengajuan tidak otomatis membatalkan pesanan, menukar barang, atau memproses pengembalian dana.</p></section>';
+        }
+
+        function toggleReturnProductField() {
+            const type = document.getElementById('return-request-type')?.value;
+            const wrap = document.getElementById('return-request-product-wrap');
+            const input = document.getElementById('return-request-product');
+            const required = type === 'exchange';
+            wrap?.classList.toggle('hidden', !required);
+            if (input) input.required = required;
+        }
+
+        async function submitReturnRequest(event) {
+            event.preventDefault();
+            const form = document.getElementById('return-request-form');
+            const button = document.getElementById('return-request-submit');
+            const feedback = document.getElementById('return-request-feedback');
+            const phone = document.getElementById('track-order-phone')?.value.trim() || '';
+            if (!form || !button || !feedback) return;
+            button.disabled = true;
+            button.textContent = 'Mengirim pengajuan…';
+            feedback.className = 'hidden rounded-xl p-3 text-sm';
+            try {
+                const response = await fetch(SUPABASE_URL + '/functions/v1/order-return-request', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+                    body: JSON.stringify({
+                        order_number: document.getElementById('return-request-order')?.value.trim(),
+                        phone,
+                        request_type: document.getElementById('return-request-type')?.value,
+                        reason: document.getElementById('return-request-reason')?.value,
+                        details: document.getElementById('return-request-details')?.value.trim(),
+                        requested_product: document.getElementById('return-request-product')?.value.trim()
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok || !result.ok) throw new Error(result.error || 'Pengajuan belum dapat dikirim.');
+                feedback.className = 'rounded-xl border border-green-200 bg-green-50 p-3 text-sm text-green-800';
+                feedback.textContent = 'Pengajuan ' + result.request.request_number + ' berhasil dikirim. Admin akan meninjau permintaanmu. Memuat status terbaru…';
+                form.reset();
+                toggleReturnProductField();
+                setTimeout(() => document.getElementById('track-order-form')?.requestSubmit(), 900);
+            } catch (error) {
+                feedback.className = 'rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700';
+                feedback.textContent = error.message || 'Pengajuan belum dapat dikirim. Coba lagi.';
+            } finally {
+                button.disabled = false;
+                button.innerHTML = '<i class="ph ph-paper-plane-tilt mr-2"></i>Kirim pengajuan';
+            }
+        }
+
         function renderTrackedOrder(order, container) {
             const itemsHtml = (order.items || []).map(item => '<div class="flex justify-between gap-3 text-sm py-2 border-b border-gray-100"><span>' + escapeHTML(item.product_name) + ' × ' + Number(item.quantity) + '</span><b>' + formatRupiah(item.line_total) + '</b></div>').join('');
             const shippedInfo = order.shipping_required
@@ -1811,7 +1882,9 @@ async function loadProductReviews(productId) {
                 paymentPanel = '<div class="border border-gray-200 rounded-2xl p-4 sm:p-6 mt-5"><h3 class="font-heading text-xl font-bold text-center">Pembayaran QRIS</h3><p class="text-sm text-gray-600 text-center mt-2">Pindai QR berikut menggunakan aplikasi bank atau dompet digital yang mendukung QRIS.</p><div class="max-w-sm mx-auto mt-4 p-3 border border-gray-100 rounded-xl"><img src="' + QRIS_IMAGE_SRC + '" alt="QRIS Toko Anggun" class="w-full h-auto" loading="eager"><p class="text-xs text-gray-500 text-center mt-2">NMID: ID1026581707373 · Kode A01</p></div><div class="bg-base rounded-xl p-4 mt-4"><p class="text-sm text-gray-600">Total yang perlu dibayar</p><p class="text-2xl font-bold text-primary mt-1">' + formatRupiah(order.total) + '</p></div><p class="text-sm text-gray-600 mt-4">Simpan bukti transaksi. Status baru berubah menjadi lunas setelah admin memeriksa dana masuk.</p></div>';
             }
             const statusText = order.shipping_required && !order.shipping_confirmed ? 'Menunggu konfirmasi ongkir' : orderStatusLabel(order.order_status);
-            container.innerHTML = '<div class="bg-white border border-gray-100 rounded-2xl p-5 sm:p-7"><div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"><div><p class="text-xs text-gray-500">Nomor pesanan</p><h2 class="font-bold text-xl text-primary break-all">' + escapeHTML(order.order_number) + '</h2><p class="text-sm text-gray-600 mt-1">' + escapeHTML(order.customer_name) + '</p></div><div class="sm:text-right"><span class="inline-block bg-lightpink/60 text-dark text-xs font-bold rounded-full px-3 py-2">' + escapeHTML(statusText) + '</span><p class="text-sm mt-2">Pembayaran: <b>' + escapeHTML(paymentStatusLabel(order.payment_status)) + '</b></p><p class="text-xs text-gray-500 mt-1">Dibuat ' + escapeHTML(new Date(order.created_at).toLocaleString('id-ID')) + '</p></div></div><div class="mt-5"><h3 class="font-bold">Rincian produk</h3>' + itemsHtml + '</div><div class="flex justify-between text-sm mt-4"><span class="text-gray-600">Subtotal</span><b>' + formatRupiah(order.subtotal) + '</b></div><div class="flex justify-between text-sm mt-2"><span class="text-gray-600">Ongkir</span><b>' + (order.shipping_required ? (order.shipping_confirmed ? formatRupiah(order.shipping_cost) : 'Menunggu konfirmasi') : 'Rp 0') + '</b></div><div class="flex justify-between text-lg mt-3 pt-3 border-t border-gray-200"><b>Total</b><b class="text-primary">' + formatRupiah(order.total) + '</b></div>' + shippedInfo + paymentPanel + '<button type="button" onclick="document.getElementById(\'track-order-form\').requestSubmit()" class="mt-5 text-primary font-bold text-sm">Muat ulang status</button></div>';
+            container.innerHTML = '<div class="bg-white border border-gray-100 rounded-2xl p-5 sm:p-7"><div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"><div><p class="text-xs text-gray-500">Nomor pesanan</p><h2 class="font-bold text-xl text-primary break-all">' + escapeHTML(order.order_number) + '</h2><p class="text-sm text-gray-600 mt-1">' + escapeHTML(order.customer_name) + '</p></div><div class="sm:text-right"><span class="inline-block bg-lightpink/60 text-dark text-xs font-bold rounded-full px-3 py-2">' + escapeHTML(statusText) + '</span><p class="text-sm mt-2">Pembayaran: <b>' + escapeHTML(paymentStatusLabel(order.payment_status)) + '</b></p><p class="text-xs text-gray-500 mt-1">Dibuat ' + escapeHTML(new Date(order.created_at).toLocaleString('id-ID')) + '</p></div></div><div class="mt-5"><h3 class="font-bold">Rincian produk</h3>' + itemsHtml + '</div><div class="flex justify-between text-sm mt-4"><span class="text-gray-600">Subtotal</span><b>' + formatRupiah(order.subtotal) + '</b></div><div class="flex justify-between text-sm mt-2"><span class="text-gray-600">Ongkir</span><b>' + (order.shipping_required ? (order.shipping_confirmed ? formatRupiah(order.shipping_cost) : 'Menunggu konfirmasi') : 'Rp 0') + '</b></div><div class="flex justify-between text-lg mt-3 pt-3 border-t border-gray-200"><b>Total</b><b class="text-primary">' + formatRupiah(order.total) + '</b></div>' + shippedInfo + paymentPanel + renderReturnRequestPanel(order) + '<button type="button" onclick="document.getElementById(\'track-order-form\').requestSubmit()" class="mt-5 text-primary font-bold text-sm">Muat ulang status</button></div>';
+            document.getElementById('return-request-form')?.addEventListener('submit', submitReturnRequest);
+            document.getElementById('return-request-type')?.addEventListener('change', toggleReturnProductField);
         }
 
         function renderCheckout(container) {
