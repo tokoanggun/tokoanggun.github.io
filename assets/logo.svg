@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#73b99a"/><stop offset="1" stop-color="#3f8f76"/></linearGradient></defs>
+<rect width="512" height="512" rx="64" fill="#fbf7f1"/>
+<g fill="none" stroke="#b7a477" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M94 332 Q46 286 96 242 Q116 220 137 239 Q155 258 135 276 Q120 287 110 271"/>
+<path d="M418 332 Q466 286 416 242 Q396 220 375 239 Q357 258 377 276 Q392 287 402 271"/>
+<path d="M100 365 Q170 400 256 382 Q342 400 412 365"/>
+<path d="M156 115 Q106 167 109 238 Q111 300 165 344"/>
+<path d="M356 115 Q406 167 403 238 Q401 300 347 344"/>
+<path d="M176 342 Q205 374 256 387 Q307 374 336 342"/>
+</g>
+<g fill="#e9a9bf" stroke="#b7a477" stroke-width="5">
+<path d="M256 46 C234 69 239 92 256 102 C273 92 278 69 256 46Z"/>
+<path d="M220 58 C196 65 191 85 207 100 C225 91 232 75 220 58Z"/>
+<path d="M292 58 C316 65 321 85 305 100 C287 91 280 75 292 58Z"/>
+</g>
+<g fill="url(#g)" stroke="#b7a477" stroke-width="6" stroke-linejoin="round">
+<path d="M256 114 C203 114 175 154 185 205 C192 242 224 263 257 270 C293 279 323 294 325 323 C327 350 300 368 268 367 C231 366 202 346 188 317 L151 336 C173 380 214 406 264 408 C322 410 367 377 365 325 C364 282 334 252 283 239 C247 230 224 212 225 184 C226 161 239 146 258 146 C279 146 292 161 292 184 L331 184 C331 143 300 114 256 114Z"/>
+<path d="M146 285 Q115 298 101 334 Q134 329 154 308Z"/>
+<path d="M366 285 Q397 298 411 334 Q378 329 358 308Z"/>
+<path d="M213 366 Q190 340 180 312 Q218 321 235 354Z"/>
+<path d="M299 366 Q322 340 332 312 Q294 321 277 354Z"/>
+</g>
+<g fill="#e9a9bf" stroke="#b7a477" stroke-width="4"><path d="M169 298 Q143 275 160 253 Q184 262 183 286Z"/><path d="M343 298 Q369 275 352 253 Q328 262 329 286Z"/></g>
+<text x="256" y="465" text-anchor="middle" font-family="Georgia,serif" font-size="49" letter-spacing="3" fill="#b7a477">ANGGUN</text>
+</svg>
