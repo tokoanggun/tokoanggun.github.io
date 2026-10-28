@@ -2463,7 +2463,7 @@ async function loadProductReviews(productId) {
                 (items || []).forEach(item => { (grouped[item.order_id] ||= []).push(item); });
                 list.innerHTML = orders.map(order => {
                     const itemText = (grouped[order.id] || []).map(item => escapeHTML(item.product_name) + ' × ' + item.quantity).join(', ') || 'Rincian tidak tersedia';
-                    const shipText = order.shipping_required ? 'Dikirim: ' + escapeHTML(order.shipping_address || '') + ' (' + escapeHTML(order.shipping_method || 'Belum ditentukan') + ')' : 'Ambil sendiri';
+                    const shipText = order.shipping_required ? 'Dikirim: ' + escapeHTML(order.shipping_address || '') + ' (Ekspedisi: ' + escapeHTML(order.shipping_courier || order.shipping_method || 'Belum ditentukan') + (order.tracking_number ? ' · Resi: ' + escapeHTML(order.tracking_number) : '') + ')' : 'Ambil sendiri';
                     const paymentText = order.payment_method === 'qris_manual' ? 'QRIS manual' : (order.payment_method || 'Belum dipilih');
                     const canConfirmQris = order.payment_method === 'qris_manual' && order.payment_status !== 'paid' && (!order.shipping_required || order.shipping_confirmed);
                     const confirmButton = canConfirmQris ? '<button type="button" onclick="confirmQrisOrder(&quot;' + escapeHTML(order.id) + '&quot;)" class="mt-3 bg-primary hover:bg-primaryHover text-white text-xs px-4 py-2 rounded-lg font-bold">Konfirmasi pembayaran diterima</button>' : '';
@@ -2477,14 +2477,12 @@ async function loadProductReviews(productId) {
                         ['cancelled','Dibatalkan']
                     ].map(option => '<option value="' + option[0] + '"' + (currentStatus === option[0] ? ' selected' : '') + '>' + option[1] + '</option>').join('');
                     const orderId = escapeHTML(order.id);
-                    const courierFields = order.shipping_required
-                        ? '<div class="grid sm:grid-cols-2 gap-3 mt-3"><div><label class="text-xs font-bold block mb-1">Biaya ongkir (Rp)</label><input id="admin-shipcost-' + orderId + '" type="number" min="0" step="1" value="' + Number(order.shipping_cost || 0) + '" class="w-full border border-gray-200 rounded-lg p-2 text-sm"></div><div><label class="text-xs font-bold block mb-1">Kurir</label><input id="admin-courier-' + orderId + '" maxlength="80" value="' + escapeHTML(order.shipping_courier || order.shipping_method || '') + '" placeholder="JNE, J&T, kurir toko…" class="w-full border border-gray-200 rounded-lg p-2 text-sm"></div><div class="sm:col-span-2"><label class="text-xs font-bold block mb-1">Nomor resi</label><input id="admin-tracking-' + orderId + '" maxlength="120" value="' + escapeHTML(order.tracking_number || '') + '" placeholder="Masukkan nomor resi pengiriman" class="w-full border border-gray-200 rounded-lg p-2 text-sm"></div></div>'
-                        : '';
+                    const courierFields = '<div id="admin-shipping-fields-' + orderId + '" class="grid sm:grid-cols-2 gap-3 mt-3' + (order.shipping_required ? '' : ' hidden') + '"><div class="sm:col-span-2"><p class="text-xs text-gray-500">Jika status diubah menjadi Dikirim, nama ekspedisi dan nomor resi wajib diisi.</p></div><div><label class="text-xs font-bold block mb-1">Nama ekspedisi / kurir <span class="text-red-500">*</span></label><input id="admin-courier-' + orderId + '" maxlength="80" value="' + escapeHTML(order.shipping_courier || order.shipping_method || '') + '" placeholder="JNE, J&T, SiCepat, Pos Indonesia…" class="w-full border border-gray-200 rounded-lg p-2 text-sm"></div><div><label class="text-xs font-bold block mb-1">Nomor resi <span class="text-red-500">*</span></label><input id="admin-tracking-' + orderId + '" maxlength="120" value="' + escapeHTML(order.tracking_number || '') + '" placeholder="Masukkan nomor resi" class="w-full border border-gray-200 rounded-lg p-2 text-sm"></div>' + (order.shipping_required ? '<div><label class="text-xs font-bold block mb-1">Biaya ongkir (Rp)</label><input id="admin-shipcost-' + orderId + '" type="number" min="0" step="1" value="' + Number(order.shipping_cost || 0) + '" class="w-full border border-gray-200 rounded-lg p-2 text-sm"></div>' : '') + '</div>';
                     const saveButton = '<button type="button" onclick="saveOrderFulfillment(&quot;' + orderId + '&quot;,' + Boolean(order.shipping_required) + ',' + Boolean(order.shipping_confirmed) + ',' + Number(order.subtotal || 0) + ')" class="mt-3 border border-primary text-primary hover:bg-primary hover:text-white text-xs px-4 py-2 rounded-lg font-bold">Simpan status' + (order.shipping_required && !order.shipping_confirmed ? ' & konfirmasi ongkir' : '') + '</button>';
                     const shippingStatus = order.shipping_required
                         ? '<p class="text-xs mt-2 ' + (order.shipping_confirmed ? 'text-green-700' : 'text-amber-700') + '">' + (order.shipping_confirmed ? 'Ongkir sudah dikonfirmasi: ' + formatRupiah(order.shipping_cost) : 'Menunggu konfirmasi ongkir; QRIS akan dibuka setelah ongkir disimpan.') + '</p>'
                         : '';
-                    return '<article class="border border-gray-100 rounded-xl p-4 mb-3"><div class="flex flex-col sm:flex-row sm:justify-between gap-3"><div><p class="font-bold text-primary">' + escapeHTML(order.order_number) + '</p><p class="font-semibold mt-1">' + escapeHTML(order.customer_name) + '</p><p class="text-sm text-gray-500">' + escapeHTML(order.customer_phone) + (order.customer_email ? ' · ' + escapeHTML(order.customer_email) : '') + '</p><p class="text-xs text-gray-500 mt-1">Metode: ' + escapeHTML(paymentText) + '</p></div><div class="sm:text-right"><p class="font-bold text-lg">' + formatRupiah(order.total) + '</p><p class="text-xs text-gray-500">' + escapeHTML(paymentStatusLabel(order.payment_status)) + ' · ' + escapeHTML(orderStatusLabel(order.order_status)) + '</p><p class="text-xs text-gray-400 mt-1">' + escapeHTML(new Date(order.created_at).toLocaleString('id-ID')) + '</p></div></div><p class="text-sm mt-3">' + itemText + '</p><p class="text-xs text-gray-500 mt-2">' + shipText + '</p>' + (order.notes ? '<p class="text-xs text-gray-500 mt-1">Catatan: ' + escapeHTML(order.notes) + '</p>' : '') + '<div class="mt-4 border-t border-gray-100 pt-4"><label class="text-xs font-bold block mb-1">Status pesanan</label><select id="admin-status-' + orderId + '" class="w-full border border-gray-200 rounded-lg p-2 text-sm">' + statusOptions + '</select>' + courierFields + shippingStatus + saveButton + confirmButton + '</div></article>';
+                    return '<article class="border border-gray-100 rounded-xl p-4 mb-3"><div class="flex flex-col sm:flex-row sm:justify-between gap-3"><div><p class="font-bold text-primary">' + escapeHTML(order.order_number) + '</p><p class="font-semibold mt-1">' + escapeHTML(order.customer_name) + '</p><p class="text-sm text-gray-500">' + escapeHTML(order.customer_phone) + (order.customer_email ? ' · ' + escapeHTML(order.customer_email) : '') + '</p><p class="text-xs text-gray-500 mt-1">Metode: ' + escapeHTML(paymentText) + '</p></div><div class="sm:text-right"><p class="font-bold text-lg">' + formatRupiah(order.total) + '</p><p class="text-xs text-gray-500">' + escapeHTML(paymentStatusLabel(order.payment_status)) + ' · ' + escapeHTML(orderStatusLabel(order.order_status)) + '</p><p class="text-xs text-gray-400 mt-1">' + escapeHTML(new Date(order.created_at).toLocaleString('id-ID')) + '</p></div></div><p class="text-sm mt-3">' + itemText + '</p><p class="text-xs text-gray-500 mt-2">' + shipText + '</p>' + (order.notes ? '<p class="text-xs text-gray-500 mt-1">Catatan: ' + escapeHTML(order.notes) + '</p>' : '') + '<div class="mt-4 border-t border-gray-100 pt-4"><label class="text-xs font-bold block mb-1">Status pesanan</label><select id="admin-status-' + orderId + '" onchange="toggleAdminShippingFields(&quot;' + orderId + '&quot;,' + Boolean(order.shipping_required) + ')" class="w-full border border-gray-200 rounded-lg p-2 text-sm">' + statusOptions + '</select>' + courierFields + shippingStatus + saveButton + confirmButton + '</div></article>';
                 }).join('');
             } catch (error) {
                 console.error('Gagal memuat pesanan:', error);
@@ -2597,6 +2595,18 @@ async function loadProductReviews(productId) {
         window.confirmQrisOrder = confirmQrisOrder;
 
 
+        function toggleAdminShippingFields(orderId, shippingRequired) {
+            const status = document.getElementById('admin-status-' + orderId)?.value;
+            const fields = document.getElementById('admin-shipping-fields-' + orderId);
+            const courier = document.getElementById('admin-courier-' + orderId);
+            const tracking = document.getElementById('admin-tracking-' + orderId);
+            const mustProvideShippingDetails = status === 'shipped';
+            if (fields) fields.classList.toggle('hidden', !(shippingRequired || mustProvideShippingDetails));
+            if (courier) { courier.required = mustProvideShippingDetails; courier.setAttribute('aria-required', String(mustProvideShippingDetails)); }
+            if (tracking) { tracking.required = mustProvideShippingDetails; tracking.setAttribute('aria-required', String(mustProvideShippingDetails)); }
+        }
+        window.toggleAdminShippingFields = toggleAdminShippingFields;
+
         async function saveOrderFulfillment(orderId, shippingRequired, shippingConfirmed, subtotal) {
             if (!supabaseClient || !APP_STATE.user) {
                 showToast('Masuk sebagai admin untuk mengubah status pesanan.', 'error');
@@ -2610,7 +2620,12 @@ async function loadProductReviews(productId) {
             const costInput = document.getElementById('admin-shipcost-' + orderId);
             const tracking = trackingInput ? trackingInput.value.trim() : '';
             const courier = courierInput ? courierInput.value.trim() : '';
-            if (shippingRequired && status === 'shipped' && !tracking) {
+            if (status === 'shipped' && !courier) {
+                showToast('Isi nama ekspedisi / kurir sebelum mengubah status menjadi Dikirim.', 'error');
+                courierInput?.focus();
+                return;
+            }
+            if (status === 'shipped' && !tracking) {
                 showToast('Isi nomor resi sebelum mengubah status menjadi Dikirim.', 'error');
                 trackingInput?.focus();
                 return;
