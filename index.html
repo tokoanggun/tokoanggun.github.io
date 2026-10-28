@@ -312,10 +312,11 @@
                 </a>
                 
                 <!-- Desktop Menu -->
-                <div class="hidden lg:flex space-x-8">
+                <div class="hidden lg:flex space-x-6 xl:space-x-8">
                     <a href="#home" class="text-dark hover:text-primary transition-colors font-medium">Beranda</a>
                     <a href="#catalog" class="text-dark hover:text-primary transition-colors font-medium">Koleksi Hijab</a>
                     <a href="#track-order" class="text-dark hover:text-primary transition-colors font-medium">Cek Pesanan</a>
+                    <a href="#support" class="text-dark hover:text-primary transition-colors font-medium">Pengaduan</a>
                     <a href="#home" onclick="scrollToSection('tentang')" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Tentang Kami</a>
                     <a href="#home" onclick="scrollToSection('kontak')" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Kontak</a>
                 </div>
@@ -324,6 +325,7 @@
                 <div class="flex items-center gap-3 md:gap-4">
                     <a href="#catalog" class="text-graytext hover:text-primary transition-colors p-2" aria-label="Cari produk"><i class="ph ph-magnifying-glass text-xl"></i></a>
                     <a href="#track-order" class="text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Cek status pesanan"><i class="ph ph-package text-xl"></i><span class="hidden lg:inline ml-1">Lacak</span></a>
+                    <a href="#support" class="text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Buat atau cek pengaduan"><i class="ph ph-chat-circle-dots text-xl"></i><span class="hidden xl:inline ml-1">Pengaduan</span></a>
                     <a href="#cart" class="relative bg-primary hover:bg-primaryHover text-white px-4 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm font-medium text-sm">
                         <i class="ph ph-shopping-cart text-lg"></i><span>Keranjang</span>
                         <span id="cart-count" class="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-white text-primary text-xs font-bold">0</span>
@@ -688,6 +690,94 @@
         </div>
     </template>
 
+
+    <!-- Template: Customer Support / Complaints -->
+    <template id="tpl-support">
+        <section class="bg-base min-h-[70vh] py-10 sm:py-14 px-4">
+            <div class="max-w-5xl mx-auto">
+                <div class="max-w-2xl mb-8">
+                    <p class="text-xs uppercase tracking-[0.2em] font-bold text-accent mb-2">Layanan pelanggan</p>
+                    <h1 class="font-heading text-3xl sm:text-4xl font-bold text-dark">Pengaduan & Pelaporan</h1>
+                    <p class="text-graytext mt-3 leading-relaxed">Sampaikan kendala terkait produk, pesanan, pengiriman, atau pembayaran. Kamu akan mendapat nomor tiket untuk memantau tindak lanjutnya.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+                    <div class="lg:col-span-3 bg-white rounded-3xl border border-lightpink/70 shadow-sm overflow-hidden">
+                        <div class="px-5 sm:px-7 py-5 border-b border-lightpink/60 bg-white">
+                            <h2 class="font-heading text-xl font-bold text-dark">Buat pengaduan baru</h2>
+                            <p class="text-sm text-graytext mt-1">Isi detail yang diperlukan agar admin dapat membantu dengan tepat.</p>
+                        </div>
+                        <form id="support-submit-form" class="p-5 sm:p-7 space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="support-name" class="block text-sm font-semibold text-dark mb-1.5">Nama lengkap *</label>
+                                    <input id="support-name" name="customer_name" required minlength="2" maxlength="120" autocomplete="name" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="Nama kamu">
+                                </div>
+                                <div>
+                                    <label for="support-phone" class="block text-sm font-semibold text-dark mb-1.5">Nomor HP/WhatsApp *</label>
+                                    <input id="support-phone" name="customer_phone" required minlength="8" maxlength="25" inputmode="tel" autocomplete="tel" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="08xxxxxxxxxx">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="support-email" class="block text-sm font-semibold text-dark mb-1.5">Email (opsional)</label>
+                                    <input id="support-email" name="customer_email" type="email" maxlength="254" autocomplete="email" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="nama@email.com">
+                                </div>
+                                <div>
+                                    <label for="support-order" class="block text-sm font-semibold text-dark mb-1.5">Nomor pesanan (opsional)</label>
+                                    <input id="support-order" name="order_number" maxlength="80" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="Contoh: TA-20261028-...">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="support-category" class="block text-sm font-semibold text-dark mb-1.5">Kategori pengaduan *</label>
+                                <select id="support-category" name="category" required class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15">
+                                    <option value="">Pilih kategori</option>
+                                    <option value="produk">Produk / kualitas barang</option>
+                                    <option value="pesanan">Pesanan / pembatalan</option>
+                                    <option value="pengiriman">Pengiriman / paket</option>
+                                    <option value="pembayaran">Pembayaran</option>
+                                    <option value="layanan">Pelayanan admin</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="support-reason" class="block text-sm font-semibold text-dark mb-1.5">Alasan utama *</label>
+                                <input id="support-reason" name="reason" required minlength="3" maxlength="160" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="Ringkas masalah yang kamu alami">
+                            </div>
+                            <div>
+                                <label for="support-details" class="block text-sm font-semibold text-dark mb-1.5">Keterangan tambahan *</label>
+                                <textarea id="support-details" name="details" required minlength="5" maxlength="2000" rows="5" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 resize-y" placeholder="Jelaskan kronologi, barang terkait, atau solusi yang kamu harapkan. Jangan masukkan PIN, kata sandi, atau OTP."></textarea>
+                                <p class="text-xs text-gray-500 mt-1.5">5–2.000 karakter. Sertakan nomor pesanan bila terkait transaksi.</p>
+                            </div>
+                            <div id="support-submit-error" class="hidden rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert"></div>
+                            <button id="support-submit-button" type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primaryHover px-5 py-3.5 text-sm font-bold text-white transition shadow-sm"><i class="ph ph-paper-plane-tilt text-lg"></i> Kirim Pengaduan</button>
+                            <div id="support-submit-result" class="hidden rounded-2xl border border-green-200 bg-green-50 p-4 sm:p-5" role="status" aria-live="polite"></div>
+                        </form>
+                    </div>
+
+                    <aside class="lg:col-span-2 space-y-5">
+                        <div class="bg-white rounded-3xl border border-lightpink/70 shadow-sm p-5 sm:p-6">
+                            <span class="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-lightpink text-primary"><i class="ph ph-magnifying-glass text-2xl"></i></span>
+                            <h2 class="font-heading text-xl font-bold text-dark mt-3">Cek status pengaduan</h2>
+                            <p class="text-sm text-graytext mt-1 mb-4 leading-relaxed">Gunakan nomor tiket dan nomor HP yang kamu daftarkan untuk melihat status serta catatan dari admin.</p>
+                            <form id="support-lookup-form" class="space-y-3">
+                                <div><label for="support-lookup-ticket" class="block text-sm font-semibold text-dark mb-1.5">Nomor tiket *</label><input id="support-lookup-ticket" required maxlength="30" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm uppercase focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="PGD-YYYYMMDD-XXXXXXXXXX"></div>
+                                <div><label for="support-lookup-phone" class="block text-sm font-semibold text-dark mb-1.5">Nomor HP saat laporan *</label><input id="support-lookup-phone" required minlength="8" maxlength="25" inputmode="tel" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="08xxxxxxxxxx"></div>
+                                <div id="support-lookup-error" class="hidden rounded-xl bg-red-50 p-3 text-sm text-red-700" role="alert"></div>
+                                <button id="support-lookup-button" type="submit" class="w-full rounded-xl border border-primary text-primary hover:bg-lightpink px-5 py-3 text-sm font-bold transition">Periksa Status</button>
+                            </form>
+                            <div id="support-lookup-result" class="mt-4" aria-live="polite"></div>
+                        </div>
+                        <div class="rounded-2xl border border-primary/20 bg-white/70 p-5">
+                            <h3 class="font-bold text-dark flex items-center gap-2"><i class="ph ph-bell-ringing text-primary text-xl"></i> Informasi tindak lanjut</h3>
+                            <p class="text-sm text-graytext mt-2 leading-relaxed">Nomor tiket perlu disimpan. Admin akan memperbarui status di sistem. Jika laporan belum selesai setelah 7 hari, laporan ditandai untuk tindak lanjut mingguan di dashboard admin. Untuk balasan langsung, gunakan kontak WhatsApp pada footer.</p>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </template>
+
     <!-- Template: Admin Login -->
     <template id="tpl-admin-login">
         <div class="fade-in flex-grow flex items-center justify-center py-20 bg-base px-4 min-h-[80vh]">
@@ -756,6 +846,7 @@
                     <button type="button" onclick="goToAdminProducts(event)" class="w-full text-left flex items-center gap-3 bg-white/10 px-4 py-3 rounded-xl text-white font-medium shadow-sm hover:bg-white/15 transition"><i class="ph-fill ph-package text-xl text-accent"></i> Produk & Jasa</button>
                     <button type="button" onclick="viewAdminOrders(event)" class="w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-receipt text-xl"></i> Pesanan Masuk</button>
                     <button type="button" onclick="viewAdminReturns(event)" class="w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-arrow-u-up-left text-xl"></i> Retur & Penukaran</button>
+                    <button type="button" onclick="viewAdminSupportTickets(event)" class="w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-chat-circle-dots text-xl"></i> Pengaduan Pelanggan <span id="admin-support-pending-badge" class="ml-auto hidden rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-white"></span></button>
                     <button type="button" onclick="toggleAdminSettings(event)" aria-controls="settings-body" class="w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-gear text-xl"></i> Pengaturan Web</button>
                     
                     <p class="px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2 mt-8">Tautan Cepat</p>
@@ -900,6 +991,17 @@
                         <div class="px-6 py-5 border-b border-gray-100"><h2 class="font-heading text-xl font-bold">Retur, Penukaran & Pembatalan</h2><p class="text-sm text-gray-500 mt-1">Tinjau permintaan pelanggan dan perbarui statusnya. Persetujuan di sini tidak menjalankan pengembalian dana otomatis.</p></div>
                         <div id="admin-returns-list" class="p-6"><div class="loader mx-auto"></div></div>
                     </section>
+
+                    <section id="admin-support-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+                        <div class="px-5 sm:px-6 py-5 border-b border-gray-100">
+                            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                                <div><h2 class="font-heading text-xl font-bold">Pengaduan Pelanggan</h2><p class="text-sm text-gray-500 mt-1">Tinjau laporan, tulis tanggapan, dan perbarui statusnya. Laporan terbuka yang belum diperbarui selama 7 hari akan ditandai sebagai pengingat tindak lanjut mingguan.</p></div>
+                                <button type="button" onclick="viewAdminSupportTickets(event)" class="self-start rounded-xl border border-primary px-4 py-2 text-sm font-bold text-primary hover:bg-lightpink"><i class="ph ph-arrows-clockwise mr-1"></i> Muat ulang</button>
+                            </div>
+                        </div>
+                        <div id="admin-support-list" class="p-4 sm:p-6"><div class="loader mx-auto"></div></div>
+                    </section>
+
                 </div>
             </main>
         </div>
@@ -1259,6 +1361,8 @@ let supabaseClient = null;
                     renderCheckout(appContent);
                 } else if (baseHash === '#track-order') {
                     renderTrackOrder(appContent);
+                } else if (baseHash === '#support') {
+                    renderSupportPage(appContent);
                 } else if (baseHash === '#admin') {
                     const user = await checkAuth();
                     if (!user) {
@@ -2008,6 +2112,225 @@ async function loadProductReviews(productId) {
 
             container.innerHTML = '<section class="bg-base min-h-[70vh] py-12 px-4"><div class="max-w-2xl mx-auto bg-white rounded-3xl border border-gray-100 p-6 sm:p-10 text-center"><div class="w-16 h-16 rounded-full bg-green-50 text-green-700 flex items-center justify-center mx-auto"><i class="ph ph-check-circle text-4xl"></i></div><h1 class="font-heading text-3xl font-bold mt-5">Pesanan berhasil dibuat</h1><p class="text-gray-500 mt-2">Simpan nomor pesanan berikut untuk referensi.</p><div class="bg-base rounded-xl p-4 mt-5"><p class="text-xs text-gray-500">Nomor pesanan</p><p class="text-xl font-bold text-primary mt-1 break-all">' + escapeHTML(result.order_number || '-') + '</p><p class="text-xs text-gray-500 mt-3">' + totalLabel + '</p><p class="text-lg font-bold mt-1">' + formatRupiah(result.total || 0) + '</p></div>' + paymentContent + '<p class="text-sm text-gray-500 mt-5">Jika ada kendala, simpan nomor pesanan dan bukti pembayaran untuk pengecekan admin.</p><div class="flex flex-col sm:flex-row gap-3 mt-6"><a href="#track-order" class="flex-1 bg-primary text-white rounded-xl p-3 font-bold">Cek Status Pesanan</a><a href="#catalog" class="flex-1 border border-gray-200 rounded-xl p-3 font-bold">Lanjut Belanja</a><a href="#home" class="flex-1 border border-gray-200 rounded-xl p-3 font-bold">Beranda</a></div></div></section>';
         }
+
+        // Customer support and complaint ticket workflow.
+        const supportStatusLabels = {
+            submitted: 'Menunggu ditinjau',
+            reviewing: 'Sedang ditinjau',
+            waiting_customer: 'Menunggu informasi pelanggan',
+            resolved: 'Sudah ditangani',
+            closed: 'Ditutup',
+            rejected: 'Tidak disetujui'
+        };
+        function supportStatusLabel(status) {
+            return supportStatusLabels[status] || 'Status belum tersedia';
+        }
+        function supportStatusBadge(status) {
+            const cls = status === 'resolved' || status === 'closed'
+                ? 'bg-green-100 text-green-800'
+                : status === 'rejected'
+                    ? 'bg-red-100 text-red-800'
+                    : status === 'waiting_customer'
+                        ? 'bg-amber-100 text-amber-800'
+                        : 'bg-lightpink text-dark';
+            return '<span class="inline-flex rounded-full px-3 py-1.5 text-xs font-bold ' + cls + '">' + escapeHTML(supportStatusLabel(status)) + '</span>';
+        }
+        function supportDate(date) {
+            return date ? new Date(date).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
+        }
+        async function renderSupportPage(container) {
+            const template = document.getElementById('tpl-support').content.cloneNode(true);
+            container.innerHTML = '';
+            container.appendChild(template);
+            const submitForm = document.getElementById('support-submit-form');
+            const lookupForm = document.getElementById('support-lookup-form');
+
+            submitForm?.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const errorBox = document.getElementById('support-submit-error');
+                const resultBox = document.getElementById('support-submit-result');
+                const button = document.getElementById('support-submit-button');
+                if (!supabaseClient) {
+                    errorBox.textContent = 'Koneksi layanan pengaduan belum siap. Periksa jaringan lalu muat ulang halaman.';
+                    errorBox.classList.remove('hidden');
+                    return;
+                }
+                const payload = {
+                    p_customer_name: document.getElementById('support-name').value.trim(),
+                    p_customer_phone: document.getElementById('support-phone').value.trim(),
+                    p_customer_email: document.getElementById('support-email').value.trim() || null,
+                    p_order_number: document.getElementById('support-order').value.trim() || null,
+                    p_category: document.getElementById('support-category').value,
+                    p_reason: document.getElementById('support-reason').value.trim(),
+                    p_details: document.getElementById('support-details').value.trim()
+                };
+                errorBox.classList.add('hidden');
+                resultBox.classList.add('hidden');
+                button.disabled = true;
+                button.innerHTML = '<span class="loader w-4 h-4 border-2 border-t-white"></span> Mengirim laporan…';
+                try {
+                    const { data, error } = await supabaseClient.rpc('submit_support_ticket', payload);
+                    if (error) throw error;
+                    const ticket = Array.isArray(data) ? data[0] : data;
+                    if (!ticket || !ticket.ticket_number) throw new Error('Pengaduan belum mendapat nomor tiket. Silakan coba kembali.');
+                    resultBox.innerHTML = '<p class="font-bold text-green-900 flex items-center gap-2"><i class="ph ph-check-circle text-xl"></i> Pengaduan berhasil dikirim</p>' +
+                        '<p class="text-sm text-green-900 mt-2">Simpan nomor tiket ini untuk mengecek status pengaduanmu.</p>' +
+                        '<p class="text-xs uppercase font-bold tracking-wider text-green-800 mt-4">Nomor tiket</p>' +
+                        '<p class="mt-1 rounded-xl bg-white border border-green-200 p-3 text-lg font-bold text-dark break-all select-all">' + escapeHTML(ticket.ticket_number) + '</p>' +
+                        '<p class="text-xs text-green-900 mt-3">Status awal: Menunggu ditinjau. Simpan juga nomor HP yang kamu masukkan.</p>';
+                    resultBox.classList.remove('hidden');
+                    document.getElementById('support-lookup-ticket').value = ticket.ticket_number;
+                    document.getElementById('support-lookup-phone').value = payload.p_customer_phone;
+                    document.getElementById('support-lookup-result').innerHTML = '';
+                    submitForm.reset();
+                    resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } catch (error) {
+                    console.error('Gagal mengirim pengaduan:', error);
+                    errorBox.textContent = error.message || 'Pengaduan gagal dikirim. Coba lagi beberapa saat.';
+                    errorBox.classList.remove('hidden');
+                } finally {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="ph ph-paper-plane-tilt text-lg"></i> Kirim Pengaduan';
+                }
+            });
+
+            lookupForm?.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const errorBox = document.getElementById('support-lookup-error');
+                const resultBox = document.getElementById('support-lookup-result');
+                const button = document.getElementById('support-lookup-button');
+                if (!supabaseClient) {
+                    errorBox.textContent = 'Koneksi layanan pengaduan belum siap. Periksa jaringan lalu muat ulang halaman.';
+                    errorBox.classList.remove('hidden');
+                    return;
+                }
+                errorBox.classList.add('hidden');
+                resultBox.innerHTML = '';
+                button.disabled = true;
+                button.textContent = 'Memeriksa…';
+                try {
+                    const { data, error } = await supabaseClient.rpc('lookup_support_ticket', {
+                        p_ticket_number: document.getElementById('support-lookup-ticket').value.trim(),
+                        p_phone: document.getElementById('support-lookup-phone').value.trim()
+                    });
+                    if (error) throw error;
+                    const ticket = Array.isArray(data) ? data[0] : data;
+                    if (!ticket) {
+                        resultBox.innerHTML = '<div class="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">Tiket tidak ditemukan. Periksa kembali nomor tiket dan nomor HP yang digunakan saat membuat laporan.</div>';
+                        return;
+                    }
+                    const isOpen = !['resolved', 'closed', 'rejected'].includes(ticket.status);
+                    const needsFollowUp = isOpen && (Date.now() - new Date(ticket.updated_at || ticket.created_at).getTime() >= 7 * 24 * 60 * 60 * 1000);
+                    resultBox.innerHTML = '<div class="rounded-2xl border border-gray-100 bg-base p-4">' +
+                        '<p class="text-xs uppercase tracking-wider font-bold text-gray-500">Nomor tiket</p><p class="font-bold text-dark break-all mt-1">' + escapeHTML(ticket.ticket_number) + '</p>' +
+                        '<div class="mt-3">' + supportStatusBadge(ticket.status) + '</div>' +
+                        '<p class="text-xs text-gray-500 mt-4">Dikirim: ' + escapeHTML(supportDate(ticket.created_at)) + '</p>' +
+                        '<p class="text-xs text-gray-500 mt-1">Pembaruan terakhir: ' + escapeHTML(supportDate(ticket.updated_at)) + '</p>' +
+                        '<p class="text-sm font-bold text-dark mt-4">Alasan</p><p class="text-sm text-gray-600 mt-1 break-words">' + escapeHTML(ticket.reason) + '</p>' +
+                        (ticket.admin_notes ? '<div class="mt-4 rounded-xl border border-lightpink bg-white p-3"><p class="text-sm font-bold text-dark">Catatan admin</p><p class="text-sm text-gray-600 mt-1 whitespace-pre-line break-words">' + escapeHTML(ticket.admin_notes) + '</p></div>' : '') +
+                        (isOpen ? '<p class="mt-4 text-xs leading-relaxed ' + (needsFollowUp ? 'text-amber-800 bg-amber-50 border border-amber-200' : 'text-gray-600 bg-white border border-gray-100') + ' rounded-xl p-3">' + (needsFollowUp ? 'Laporan ini belum diperbarui selama 7 hari. Laporan ditandai untuk tindak lanjut mingguan; bila perlu, hubungi admin melalui WhatsApp.' : 'Pengaduan masih diproses. Simpan nomor tiket dan periksa kembali statusnya nanti.') + '</p>' : '<p class="mt-4 text-xs rounded-xl bg-green-50 border border-green-200 text-green-800 p-3">Status pengaduan ini sudah tidak berada dalam antrean aktif.</p>') +
+                        '</div>';
+                } catch (error) {
+                    console.error('Gagal memeriksa pengaduan:', error);
+                    errorBox.textContent = error.message || 'Status pengaduan tidak dapat diperiksa saat ini.';
+                    errorBox.classList.remove('hidden');
+                } finally {
+                    button.disabled = false;
+                    button.textContent = 'Periksa Status';
+                }
+            });
+        }
+
+        async function viewAdminSupportTickets(event) {
+            event?.preventDefault();
+            if (!supabaseClient || !APP_STATE.user || !(await hasAdminAccess(APP_STATE.user))) {
+                showToast('Masuk sebagai admin untuk mengelola pengaduan.', 'error');
+                return;
+            }
+            document.getElementById('settings-body')?.classList.add('hidden');
+            document.getElementById('admin-products-panel')?.classList.add('hidden');
+            document.getElementById('admin-orders-panel')?.classList.add('hidden');
+            document.getElementById('admin-returns-panel')?.classList.add('hidden');
+            const panel = document.getElementById('admin-support-panel');
+            const list = document.getElementById('admin-support-list');
+            if (!panel || !list) return;
+            panel.classList.remove('hidden');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            closeAdminSidebarOnMobile();
+            list.innerHTML = '<div class="loader mx-auto"></div>';
+            try {
+                const { data, error } = await supabaseClient.from('support_tickets').select('*').order('created_at', { ascending: false }).limit(200);
+                if (error) throw error;
+                const tickets = data || [];
+                const openTickets = tickets.filter(ticket => !['resolved','closed','rejected'].includes(ticket.status));
+                const overdue = openTickets.filter(ticket => Date.now() - new Date(ticket.updated_at || ticket.created_at).getTime() >= 7 * 24 * 60 * 60 * 1000);
+                const badge = document.getElementById('admin-support-pending-badge');
+                if (badge) {
+                    badge.textContent = String(openTickets.length);
+                    badge.classList.toggle('hidden', openTickets.length === 0);
+                }
+                if (!tickets.length) {
+                    list.innerHTML = '<div class="py-12 text-center"><i class="ph ph-chat-circle-dots text-4xl text-gray-300"></i><p class="font-bold mt-3">Belum ada pengaduan</p><p class="text-sm text-gray-500 mt-1">Laporan dari pelanggan akan muncul di sini setelah dikirim.</p></div>';
+                    return;
+                }
+                list.innerHTML = '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">' +
+                    '<div class="rounded-xl bg-base p-4"><p class="text-xs text-gray-500">Total laporan</p><p class="text-2xl font-bold text-dark mt-1">' + tickets.length + '</p></div>' +
+                    '<div class="rounded-xl bg-amber-50 p-4"><p class="text-xs text-amber-800">Belum selesai</p><p class="text-2xl font-bold text-amber-900 mt-1">' + openTickets.length + '</p></div>' +
+                    '<div class="rounded-xl ' + (overdue.length ? 'bg-red-50' : 'bg-green-50') + ' p-4"><p class="text-xs ' + (overdue.length ? 'text-red-700' : 'text-green-700') + '">Perlu tindak lanjut mingguan</p><p class="text-2xl font-bold mt-1 ' + (overdue.length ? 'text-red-900' : 'text-green-900') + '">' + overdue.length + '</p></div></div>' +
+                    tickets.map(ticket => {
+                        const id = escapeHTML(ticket.id);
+                        const phone = String(ticket.customer_phone || '').replace(/[^0-9]/g, '');
+                        const statusOpts = Object.keys(supportStatusLabels).map(value => '<option value="' + value + '"' + (ticket.status === value ? ' selected' : '') + '>' + supportStatusLabels[value] + '</option>').join('');
+                        const needsFollowUp = !['resolved','closed','rejected'].includes(ticket.status) && Date.now() - new Date(ticket.updated_at || ticket.created_at).getTime() >= 7 * 24 * 60 * 60 * 1000;
+                        const waMsg = encodeURIComponent('Halo ' + (ticket.customer_name || 'Kak') + ', kami dari Toko Anggun menindaklanjuti pengaduan ' + ticket.ticket_number + '.');
+                        const waLink = phone ? '<a href="https://wa.me/' + phone + '?text=' + waMsg + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-xs font-bold text-green-800 hover:bg-green-100"><i class="ph ph-whatsapp-logo"></i> Hubungi pelanggan</a>' : '';
+                        return '<article class="rounded-2xl border ' + (needsFollowUp ? 'border-amber-300' : 'border-gray-100') + ' p-4 sm:p-5 mb-4">' +
+                            '<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">' +
+                            '<div class="min-w-0"><p class="text-sm font-bold text-primary break-all">' + escapeHTML(ticket.ticket_number) + '</p><h3 class="font-bold mt-1">' + escapeHTML(ticket.reason) + '</h3><p class="text-xs text-gray-500 mt-1">Kategori: ' + escapeHTML(ticket.category) + ' · ' + escapeHTML(supportDate(ticket.created_at)) + '</p><p class="text-sm font-semibold mt-2">' + escapeHTML(ticket.customer_name) + ' · ' + escapeHTML(ticket.customer_phone) + '</p>' +
+                            (ticket.customer_email ? '<p class="text-xs text-gray-500 mt-1 break-all">' + escapeHTML(ticket.customer_email) + '</p>' : '') +
+                            (ticket.order_number ? '<p class="text-xs text-gray-500 mt-1">Nomor pesanan: ' + escapeHTML(ticket.order_number) + '</p>' : '') +
+                            '</div><div class="flex flex-col items-start sm:items-end gap-2">' + supportStatusBadge(ticket.status) + (needsFollowUp ? '<span class="rounded-full bg-amber-100 text-amber-900 px-3 py-1.5 text-xs font-bold">Pengingat 7 hari</span>' : '') + '</div></div>' +
+                            '<div class="mt-4 rounded-xl bg-base p-4"><p class="text-xs uppercase tracking-wider font-bold text-gray-500">Keterangan pelanggan</p><p class="text-sm text-gray-700 mt-2 whitespace-pre-line break-words">' + escapeHTML(ticket.details) + '</p></div>' +
+                            '<div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label for="admin-support-status-' + id + '" class="block text-xs font-bold mb-1.5">Status pengaduan</label><select id="admin-support-status-' + id + '" class="w-full rounded-lg border border-gray-200 bg-white p-3 text-sm">' + statusOpts + '</select></div>' +
+                            '<div><label for="admin-support-notes-' + id + '" class="block text-xs font-bold mb-1.5">Tanggapan / catatan untuk pelanggan</label><textarea id="admin-support-notes-' + id + '" rows="3" maxlength="2000" class="w-full rounded-lg border border-gray-200 p-3 text-sm" placeholder="Tulis tanggapan atau langkah berikutnya">' + escapeHTML(ticket.admin_notes || '') + '</textarea></div></div>' +
+                            '<div class="mt-3 flex flex-wrap items-center gap-2"><button type="button" onclick="saveSupportTicketDecision(&quot;' + id + '&quot;)" class="rounded-xl bg-primary hover:bg-primaryHover px-4 py-2.5 text-sm font-bold text-white">Simpan perubahan</button>' + waLink + '</div>' +
+                            '<p class="mt-3 text-xs text-gray-500">Pembaruan terakhir: ' + escapeHTML(supportDate(ticket.updated_at)) + '</p></article>';
+                    }).join('');
+            } catch (error) {
+                console.error('Gagal memuat pengaduan:', error);
+                list.innerHTML = '<div class="rounded-xl bg-red-50 p-4 text-sm text-red-700">Pengaduan gagal dimuat. Pastikan migrasi support_tickets sudah berhasil diterapkan dan akun admin memiliki akses.</div>';
+            }
+        }
+        window.viewAdminSupportTickets = viewAdminSupportTickets;
+
+        async function saveSupportTicketDecision(id) {
+            if (!supabaseClient || !APP_STATE.user || !(await hasAdminAccess(APP_STATE.user))) {
+                showToast('Masuk sebagai admin untuk mengubah pengaduan.', 'error');
+                return;
+            }
+            const statusEl = document.getElementById('admin-support-status-' + id);
+            const notesEl = document.getElementById('admin-support-notes-' + id);
+            if (!statusEl || !notesEl) return;
+            const status = statusEl.value;
+            const patch = {
+                status: status,
+                admin_notes: notesEl.value.trim() || null,
+                updated_at: new Date().toISOString(),
+                resolved_at: ['resolved','closed','rejected'].includes(status) ? new Date().toISOString() : null
+            };
+            try {
+                const { data, error } = await supabaseClient.from('support_tickets').update(patch).eq('id', id).select('id').maybeSingle();
+                if (error) throw error;
+                if (!data) throw new Error('Laporan tidak diperbarui. Pastikan akun admin memiliki izin.');
+                showToast('Status pengaduan berhasil diperbarui.');
+                await viewAdminSupportTickets();
+            } catch (error) {
+                console.error('Gagal menyimpan keputusan pengaduan:', error);
+                showToast(error.message || 'Gagal memperbarui pengaduan.', 'error');
+            }
+        }
+        window.saveSupportTicketDecision = saveSupportTicketDecision;
+
         // D. ADMIN LOGIN
         async function renderAdminLogin(container) {
             const template = document.getElementById('tpl-admin-login').content.cloneNode(true);
@@ -2093,10 +2416,12 @@ async function loadProductReviews(productId) {
             const settings = document.getElementById('settings-body');
             const orders = document.getElementById('admin-orders-panel');
             const returns = document.getElementById('admin-returns-panel');
+            const support = document.getElementById('admin-support-panel');
             const panel = document.getElementById('admin-products-panel');
             if (settings) settings.classList.add('hidden');
             if (orders) orders.classList.add('hidden');
             if (returns) returns.classList.add('hidden');
+            if (support) support.classList.add('hidden');
             if (panel) { panel.classList.remove('hidden'); panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
             closeAdminSidebarOnMobile();
         }
@@ -2106,6 +2431,7 @@ async function loadProductReviews(productId) {
             document.getElementById('settings-body')?.classList.add('hidden');
             document.getElementById('admin-products-panel')?.classList.add('hidden');
             document.getElementById('admin-returns-panel')?.classList.add('hidden');
+            document.getElementById('admin-support-panel')?.classList.add('hidden');
             const panel = document.getElementById('admin-orders-panel');
             if (!panel) return;
             panel.classList.remove('hidden');
@@ -2167,6 +2493,7 @@ async function loadProductReviews(productId) {
             document.getElementById('settings-body')?.classList.add('hidden');
             document.getElementById('admin-products-panel')?.classList.add('hidden');
             document.getElementById('admin-orders-panel')?.classList.add('hidden');
+            document.getElementById('admin-support-panel')?.classList.add('hidden');
             const panel = document.getElementById('admin-returns-panel');
             const list = document.getElementById('admin-returns-list');
             if (!panel || !list) return;
@@ -2333,9 +2660,11 @@ async function loadProductReviews(productId) {
             event?.preventDefault();
             const orders = document.getElementById('admin-orders-panel');
             const returns = document.getElementById('admin-returns-panel');
+            const support = document.getElementById('admin-support-panel');
             const products = document.getElementById('admin-products-panel');
             if (orders) orders.classList.add('hidden');
             if (returns) returns.classList.add('hidden');
+            if (support) support.classList.add('hidden');
             if (products) products.classList.remove('hidden');
             const settings = document.getElementById('settings-body');
             if (!settings) return;
