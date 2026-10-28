@@ -81,8 +81,25 @@
 
         /* Responsive safeguards: preserve the same brand and content across screen sizes */
         *, *::before, *::after { box-sizing: border-box; }
-        html { width: 100%; max-width: 100%; scroll-padding-top: 5rem; }
-        body, #app-content, main, section, article, nav, footer { min-width: 0; max-width: 100%; }
+        html {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: clip;
+            scroll-padding-top: 5rem;
+        }
+        body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: clip !important;
+        }
+        body, #app-content, main, section, article, nav, footer {
+            min-width: 0;
+            max-width: 100%;
+        }
+        #app-content {
+            width: 100%;
+            overflow-x: clip;
+        }
         img, video, iframe, canvas, svg { max-width: 100%; }
         img { height: auto; }
         input, select, textarea, button { max-width: 100%; }
