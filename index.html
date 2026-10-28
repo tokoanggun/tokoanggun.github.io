@@ -302,7 +302,7 @@
 <body class="flex flex-col min-h-screen">
 
     <!-- Global Top Navigation -->
-    <nav id="navbar" class="bg-base/90 backdrop-blur-md sticky top-0 z-40 border-b border-lightpink/50 transition-all duration-300">
+    <nav id="navbar" aria-label="Navigasi utama Toko Anggun" class="bg-base/90 backdrop-blur-md sticky top-0 z-40 border-b border-lightpink/50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <!-- Logo -->
@@ -314,9 +314,9 @@
                 <!-- Desktop Menu -->
                 <div class="hidden lg:flex space-x-8">
                     <a href="#home" class="text-dark hover:text-primary transition-colors font-medium">Beranda</a>
-                    <a href="#catalog" class="text-dark hover:text-primary transition-colors font-medium">Koleksi</a>
+                    <a href="#catalog" class="text-dark hover:text-primary transition-colors font-medium">Koleksi Hijab</a>
                     <a href="#track-order" class="text-dark hover:text-primary transition-colors font-medium">Cek Pesanan</a>
-                    <a href="#home" onclick="scrollToSection('tentang')" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Tentang</a>
+                    <a href="#home" onclick="scrollToSection('tentang')" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Tentang Kami</a>
                     <a href="#home" onclick="scrollToSection('kontak')" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Kontak</a>
                 </div>
 
@@ -338,43 +338,54 @@
     <main id="app-content" class="flex-grow flex flex-col w-full relative"></main>
 
     <!-- Global Footer -->
-    <footer id="footer" class="bg-base border-t border-lightpink/60 pt-16 pb-8 mt-auto">
+    <footer id="footer" class="bg-base border-t border-lightpink/60 pt-14 sm:pt-16 pb-8 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="kontak">
-            <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
-                <div class="text-center md:text-left">
-                    <a href="#home" class="flex items-center justify-center md:justify-start gap-2 text-primary mb-3">
-                        <span class="flex items-center justify-center w-10 h-10 shrink-0 overflow-hidden rounded-full bg-white border border-lightpink"><img src="assets/logo-mark.webp?v=4" alt="Logo Toko Anggun" class="w-full h-full object-cover" loading="lazy" decoding="async"></span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-9 lg:gap-10">
+                <div class="text-center sm:text-left">
+                    <a href="#home" class="inline-flex items-center justify-center sm:justify-start gap-3 text-primary mb-4">
+                        <span class="flex items-center justify-center w-11 h-11 shrink-0 overflow-hidden rounded-full bg-white border border-lightpink"><img src="assets/logo-mark.webp?v=4" alt="Logo Toko Anggun" class="w-full h-full object-cover" loading="lazy" decoding="async"></span>
                         <span class="font-heading font-bold text-xl">Toko Anggun</span>
                     </a>
-                    <p class="text-sm text-graytext max-w-xs mx-auto md:mx-0">Hijab nyaman, anggun, dan pilihanmu ♡<br><span class="text-xs">Berbasis di Semarang, Jawa Tengah.</span></p><a href="https://maps.app.goo.gl/swJrdtQAhhyFWJGD9" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-3 text-sm font-semibold text-primary hover:text-primaryHover underline underline-offset-4"><i class="ph ph-map-pin text-lg"></i>Lihat lokasi Toko Anggun di Google Maps</a>
+                    <p class="text-sm text-graytext leading-relaxed max-w-xs mx-auto sm:mx-0">Koleksi hijab yang nyaman, anggun, dan mudah dipadukan untuk menemani setiap langkahmu.</p>
+                    <div class="mt-4 flex flex-col items-center sm:items-start gap-2">
+                        <span class="inline-flex items-center gap-2 text-sm font-semibold text-dark"><i class="ph ph-map-pin text-lg text-primary"></i> Semarang, Jawa Tengah</span>
+                        <a href="https://maps.app.goo.gl/swJrdtQAhhyFWJGD9" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primaryHover underline underline-offset-4">Lihat lokasi toko <i class="ph ph-arrow-up-right"></i></a>
+                    </div>
                 </div>
-                
-                <div class="flex flex-wrap justify-center gap-6 text-sm font-medium text-dark">
-                    <a href="#home" class="hover:text-primary transition">Beranda</a>
-                    <a href="#catalog" class="hover:text-primary transition">Koleksi</a>
-                    <a href="#track-order" class="hover:text-primary transition">Cek Pesanan</a>
-                    <a href="#home" onclick="scrollToSection('tentang')" class="hover:text-primary transition">Tentang</a>
-                    <a href="#kontak" class="hover:text-primary transition">Kontak</a>
+                <nav aria-label="Navigasi footer" class="text-center sm:text-left">
+                    <h2 class="font-heading font-bold text-lg text-dark mb-4">Jelajahi Toko</h2>
+                    <ul class="space-y-3 text-sm font-medium text-graytext">
+                        <li><a href="#home" class="hover:text-primary transition-colors">Beranda</a></li>
+                        <li><a href="#catalog" class="hover:text-primary transition-colors">Koleksi Hijab</a></li>
+                        <li><a href="#track-order" class="hover:text-primary transition-colors">Cek Status Pesanan</a></li>
+                        <li><a href="#home" onclick="scrollToSection('tentang')" class="hover:text-primary transition-colors">Tentang Kami</a></li>
+                        <li><a href="#kebijakan" class="hover:text-primary transition-colors">Kebijakan &amp; Retur</a></li>
+                    </ul>
+                </nav>
+                <div class="text-center sm:text-left">
+                    <h2 class="font-heading font-bold text-lg text-dark mb-2">Bantuan Pelanggan</h2>
+                    <p class="text-sm leading-relaxed text-graytext mb-4">Butuh bantuan soal stok, detail produk, pesanan, pembayaran, atau retur? Hubungi admin kami.</p>
+                    <a id="footer-wa-number" href="https://wa.me/6285643454205" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-white hover:bg-primaryHover transition-colors shadow-sm" aria-label="Hubungi admin melalui WhatsApp"><i class="ph ph-whatsapp-logo text-xl"></i><span data-wa-label>Hubungi Admin</span><i class="ph ph-arrow-up-right text-base"></i></a>
+                    <a href="mailto:admin@tokoanggun.com" class="mt-4 flex items-center justify-center sm:justify-start gap-2 text-sm text-graytext hover:text-primary transition-colors break-all" aria-label="Email layanan pelanggan Toko Anggun"><i class="ph ph-envelope-simple text-lg"></i> admin@tokoanggun.com</a>
                 </div>
-
-                <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                    <a id="footer-wa-icon" href="https://wa.me/6285643454205" target="_blank" rel="noopener noreferrer" aria-label="Hubungi Toko Anggun via WhatsApp" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-dark hover:bg-primary hover:text-white hover:border-primary transition-all"><i class="ph ph-whatsapp-logo text-xl"></i></a>
-                    <a id="footer-wa-number" href="https://wa.me/6285643454205" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-primary hover:text-primaryHover underline underline-offset-4">+62 856-4345-4205</a>
-                    <a href="mailto:admin@tokoanggun.com" class="inline-flex items-center gap-2 text-sm text-dark hover:text-primary underline underline-offset-4" aria-label="Email Toko Anggun"><i class="ph ph-envelope-simple text-lg"></i> admin@tokoanggun.com</a>
-                    <a href="https://www.instagram.com/lie_forme_/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @lie_forme_" title="Instagram @lie_forme_" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-dark hover:bg-primary hover:text-white hover:border-primary transition-all"><i class="ph ph-instagram-logo text-xl"></i></a>
-                    <a href="https://www.tiktok.com/@thisfor.u1?_r=1&_t=ZS-9Aqz3uDNejs" target="_blank" rel="noopener noreferrer" aria-label="TikTok @thisfor.u1" title="TikTok @thisfor.u1" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-dark hover:bg-primary hover:text-white hover:border-primary transition-all"><i class="ph ph-tiktok-logo text-xl"></i></a>
+                <div class="text-center sm:text-left">
+                    <h2 class="font-heading font-bold text-lg text-dark mb-2">Ikuti Kami</h2>
+                    <p class="text-sm leading-relaxed text-graytext mb-4">Temukan inspirasi gaya dan kabar terbaru dari Toko Anggun di media sosial.</p>
+                    <div class="space-y-3">
+                        <a href="https://www.instagram.com/lie_forme_/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @lie_forme_" title="Instagram @lie_forme_" class="group flex items-start gap-3 rounded-2xl border border-lightpink bg-white/80 p-3 text-left hover:border-primary/40 hover:shadow-sm transition-all">
+                            <span class="w-10 h-10 shrink-0 rounded-xl bg-lightpink flex items-center justify-center text-primary"><i class="ph ph-instagram-logo text-xl"></i></span>
+                            <span class="min-w-0"><span class="block text-sm font-bold text-dark group-hover:text-primary transition-colors">Instagram</span><span class="block text-xs text-graytext mt-0.5">@lie_forme_</span><span class="block text-xs text-graytext mt-1 leading-relaxed">Inspirasi padu padan hijab, gaya, dan foto pilihan.</span></span>
+                        </a>
+                        <a href="https://www.tiktok.com/@thisfor.u1?_r=1&amp;_t=ZS-9Aqz3uDNejs" target="_blank" rel="noopener noreferrer" aria-label="TikTok @thisfor.u1" title="TikTok @thisfor.u1" class="group flex items-start gap-3 rounded-2xl border border-lightpink bg-white/80 p-3 text-left hover:border-primary/40 hover:shadow-sm transition-all">
+                            <span class="w-10 h-10 shrink-0 rounded-xl bg-lightpink flex items-center justify-center text-primary"><i class="ph ph-tiktok-logo text-xl"></i></span>
+                            <span class="min-w-0"><span class="block text-sm font-bold text-dark group-hover:text-primary transition-colors">TikTok</span><span class="block text-xs text-graytext mt-0.5">@thisfor.u1</span><span class="block text-xs text-graytext mt-1 leading-relaxed">Video singkat, inspirasi styling, dan ide hijab harian.</span></span>
+                        </a>
+                    </div>
                 </div>
             </div>
-            <div class="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
-                <p>&copy; 2026 Toko Anggun. Semua hak dilindungi.</p>
-                <div class="text-center md:text-right max-w-sm">
-                    <p class="font-semibold text-gray-500"><i class="ph ph-lock-key text-primary mr-1"></i> Situs resmi</p>
-                    <a href="https://tokoanggun.github.io/" class="mt-1 inline-block text-primary underline underline-offset-2">https://tokoanggun.github.io/</a>
-                </div>
-                <div class="text-center md:text-right max-w-sm">
-                    <p class="font-semibold text-gray-500">Informasi Legalitas</p>
-                    <p class="mt-1">NIB: 000-000</p>
-                </div>
+            <div class="mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+                <p class="text-center md:text-left">&copy; 2026 Toko Anggun. Semua hak dilindungi.</p>
+                <div class="text-center"><p class="font-semibold text-gray-500"><i class="ph ph-lock-key text-primary mr-1"></i> Situs resmi</p><a href="https://tokoanggun.github.io/" class="mt-1 inline-block text-primary underline underline-offset-2">tokoanggun.github.io</a></div>
                 <a href="#admin" onclick="navigateToAdmin(event)" class="hover:text-accent transition">Dashboard Admin</a>
             </div>
         </div>
@@ -435,7 +446,7 @@
                         <div class="min-w-0">
                             <h2 class="font-heading text-lg font-bold text-dark">Hubungi Toko Anggun</h2>
                             <p class="mt-1 text-sm leading-relaxed text-graytext">Tanyakan ketersediaan produk atau bantuan pesanan melalui WhatsApp.</p>
-                            <a class="mt-3 inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-primaryHover underline underline-offset-4" href="https://wa.me/6285643454205" target="_blank" rel="noopener noreferrer">+62 856-4345-4205 <i class="ph ph-arrow-up-right"></i></a>
+                            <a class="mt-3 inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-primaryHover underline underline-offset-4" href="https://wa.me/6285643454205" target="_blank" rel="noopener noreferrer">Hubungi Admin <i class="ph ph-arrow-up-right"></i></a>
                         </div>
                     </article>
                     <article class="h-full flex items-start gap-4 rounded-3xl border border-lightpink bg-white p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
@@ -573,7 +584,7 @@
                         <article class="rounded-3xl bg-white border border-lightpink/70 p-6 md:p-7"><div class="flex items-center gap-3 mb-4"><span class="w-11 h-11 rounded-full bg-lightpink flex items-center justify-center text-primary"><i class="ph ph-lock-key text-2xl"></i></span><h3 class="font-heading text-xl font-bold">Kebijakan Privasi</h3></div><ul class="list-disc pl-5 space-y-2 text-sm text-graytext leading-relaxed"><li>Data pemesanan seperti nama, nomor kontak, alamat, dan detail pesanan digunakan untuk memproses transaksi, pengiriman, serta layanan pelanggan.</li><li>Data pesanan hanya diakses sejauh diperlukan untuk operasional toko dan tidak dijual kepada pihak lain.</li><li>Informasi alamat dan kontak dapat dibagikan kepada kurir atau penyedia pembayaran sebatas kebutuhan pemenuhan pesanan.</li><li>Pelanggan dapat menghubungi admin untuk menanyakan atau meminta koreksi data pesanan, sepanjang dapat diverifikasi.</li><li>Jangan mengirimkan kata sandi, PIN, atau kode OTP kepada siapa pun, termasuk admin toko.</li></ul></article>
                         <article class="rounded-3xl bg-white border border-lightpink/70 p-6 md:p-7"><div class="flex items-center gap-3 mb-4"><span class="w-11 h-11 rounded-full bg-lightpink flex items-center justify-center text-primary"><i class="ph ph-qr-code text-2xl"></i></span><h3 class="font-heading text-xl font-bold">Kebijakan Pembayaran</h3></div><ul class="list-disc pl-5 space-y-2 text-sm text-graytext leading-relaxed"><li>Metode pembayaran yang tersedia akan ditampilkan atau dikonfirmasi admin. Untuk pembayaran QRIS manual, gunakan QR yang ditampilkan pada halaman pesanan.</li><li>Jika biaya pengiriman belum ditentukan, admin akan mengonfirmasi ongkir dan total akhir terlebih dahulu.</li><li>Bayar sesuai total akhir yang tertera. Simpan bukti pembayaran sampai status pesanan diperbarui.</li><li>Pembayaran QRIS manual diverifikasi oleh admin; status tidak berubah otomatis hanya karena pelanggan mengirim bukti.</li><li>Jangan melakukan pembayaran tambahan ke rekening atau nomor yang tidak dikonfirmasi melalui kanal resmi Toko Anggun.</li></ul></article>
                     </div>
-                    <div class="mt-6 rounded-2xl border border-primary/20 bg-white/70 p-5 text-sm text-graytext"><p class="font-bold text-dark mb-1"><i class="ph ph-map-pin text-primary mr-1"></i> Lokasi & bantuan</p><p>Toko Anggun berbasis di Semarang, Jawa Tengah. Untuk konfirmasi alamat, ongkir, retur, atau pembayaran, hubungi <a href="https://wa.me/6285643454205" target="_blank" rel="noopener noreferrer" class="text-primary font-bold underline underline-offset-4">WhatsApp +62 856-4345-4205</a>. Alamat jalan lengkap belum dicantumkan pada situs ini.</p></div>
+                    <div class="mt-6 rounded-2xl border border-primary/20 bg-white/70 p-5 text-sm text-graytext"><p class="font-bold text-dark mb-1"><i class="ph ph-map-pin text-primary mr-1"></i> Lokasi & bantuan</p><p>Toko Anggun berbasis di Semarang, Jawa Tengah. Untuk konfirmasi alamat, ongkir, retur, atau pembayaran, hubungi <a href="https://wa.me/6285643454205" target="_blank" rel="noopener noreferrer" class="text-primary font-bold underline underline-offset-4">Hubungi Admin melalui WhatsApp</a>. Alamat jalan lengkap belum dicantumkan pada situs ini.</p></div>
                 </div>
             </section>
         </div>
@@ -1126,14 +1137,13 @@ let supabaseClient = null;
             }
 
             const number = String(APP_STATE.settings?.whatsapp_number || '6285643454205').replace(/\D/g, '');
-            const displayNumber = number === '6285643454205' ? '+62 856-4345-4205' : (number ? `+${number}` : 'WhatsApp belum diatur');
-            ['footer-wa-icon', 'footer-wa-number'].forEach((id) => {
-                const link = document.getElementById(id);
-                if (!link) return;
+            const link = document.getElementById('footer-wa-number');
+            if (link) {
                 link.href = number ? `https://wa.me/${number}` : '#';
-                if (id === 'footer-wa-number') link.textContent = displayNumber;
-                link.setAttribute('aria-label', `Hubungi Toko Anggun melalui WhatsApp ${displayNumber}`);
-            });
+                const label = link.querySelector('[data-wa-label]');
+                if (label) label.textContent = number ? 'Hubungi Admin' : 'WhatsApp belum diatur';
+                link.setAttribute('aria-label', number ? 'Hubungi admin melalui WhatsApp' : 'WhatsApp admin belum diatur');
+            }
             return APP_STATE.settings;
         }
 
