@@ -117,13 +117,13 @@
                 gap: .5rem;
                 flex-wrap: wrap;
             }
-            #navbar a[href="#home"].group { gap: .45rem; min-width: 0; }
-            #navbar a[href="#home"].group > span:first-child {
+            #navbar a.group[href="/"] { gap: .45rem; min-width: 0; }
+            #navbar a.group[href="/"] > span:first-child {
                 width: 2.25rem;
                 height: 2.25rem;
                 flex: 0 0 2.25rem;
             }
-            #navbar a[href="#home"].group > span:last-child {
+            #navbar a.group[href="/"] > span:last-child {
                 font-size: 1.2rem;
                 line-height: 1.2;
                 white-space: nowrap;
@@ -138,10 +138,7 @@
                 white-space: nowrap;
             }
             #navbar a[href="#cart"] > span:not(#cart-count) { display: none; }
-            #navbar a[href="#admin"] {
-                padding: .55rem .65rem;
-                font-size: .65rem;
-            }
+
             #navbar a[href="#track-order"] { padding: .35rem; }
             #app-content { overflow-wrap: anywhere; }
             #app-content .grid { min-width: 0; }
@@ -156,8 +153,8 @@
         }
 
         @media (max-width: 380px) {
-            #navbar a[href="#home"].group > span:last-child { font-size: 1.05rem; }
-            #navbar a[href="#admin"] { font-size: .6rem; padding: .5rem; }
+            #navbar a.group[href="/"] > span:last-child { font-size: 1.05rem; }
+
             #navbar a[href="#cart"] { padding: .5rem .55rem; }
             #navbar .max-w-7xl > div > .flex.items-center.gap-3 { gap: .2rem; }
         }
@@ -307,12 +304,20 @@
             #navbar .max-w-7xl > div > .flex.items-center.gap-3 { flex: 0 0 auto; gap: .35rem; }
             #navbar a[href="#cart"] { padding: .5rem .55rem; gap: .25rem; }
             #navbar a[href="#cart"] > span:not(#cart-count) { display: none; }
-            #navbar a[href="#admin"] { padding: .5rem .55rem; font-size: .6rem; }
+
         }
         @media (max-width: 380px) {
             #navbar a.group[href="/"] > span:last-child { font-size: .95rem; }
             #navbar .max-w-7xl > div > .flex.items-center.gap-3 { gap: .2rem; }
-            #navbar a[href="#admin"] { padding: .45rem; font-size: .55rem; }
+
+        }
+        /* Keep admin access discreet: fixed at desktop bottom-right, at the very end of the footer on mobile. */
+        @media (min-width: 1024px) {
+            #footer-admin-access { position: fixed; right: 1rem; bottom: .65rem; z-index: 30; opacity: .28; padding: .35rem .5rem; border-radius: 999px; background: rgba(251,247,241,.82); }
+            #footer-admin-access:hover, #footer-admin-access:focus-visible { opacity: 1; }
+        }
+        @media (max-width: 1023px) {
+            #footer-admin-access { position: static; display: block; width: fit-content; margin: 1rem 0 0 auto; opacity: .55; }
         }
 </style>
 </head>
@@ -352,7 +357,6 @@
                         <i class="ph ph-shopping-cart text-lg"></i><span>Keranjang</span>
                         <span id="cart-count" class="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-white text-primary text-xs font-bold">0</span>
                     </a>
-                    <a href="#admin" onclick="navigateToAdmin(event)" class="bg-lightpink text-accent hover:bg-accent hover:text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide transition-colors">Admin</a>
                 </div>
             </div>
         </div>
@@ -422,8 +426,8 @@
             <div class="mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
                 <p class="text-center md:text-left">&copy; 2026 Toko Anggun. Semua hak dilindungi.</p>
                 <div class="text-center"><p class="font-semibold text-gray-500"><i class="ph ph-lock-key text-primary mr-1"></i> Situs resmi</p><a href="https://tokoanggun.github.io/" class="mt-1 inline-block text-primary underline underline-offset-2">tokoanggun.github.io</a></div>
-                <a href="#admin" onclick="navigateToAdmin(event)" class="hover:text-accent transition">Dashboard Admin</a>
             </div>
+            <a id="footer-admin-access" href="#admin" onclick="navigateToAdmin(event)" aria-label="Akses admin" title="Akses admin" class="text-[10px] text-gray-400/60 hover:text-primary transition-opacity opacity-60 hover:opacity-100">Admin</a>
         </div>
     </footer>
 
