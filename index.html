@@ -300,7 +300,9 @@
             #navbar a.group[href="/"] { min-width: 0; flex: 1 1 auto; gap: .4rem; }
             #navbar a.group[href="/"] > span:first-child { width: 2.25rem; height: 2.25rem; flex: 0 0 2.25rem; }
             #navbar a.group[href="/"] > span:last-child { font-size: clamp(.95rem, 4vw, 1.25rem); line-height: 1.1; white-space: nowrap; }
-            #mobile-menu-toggle { flex: 0 0 2.5rem; }
+            #navbar a.group[href="/"] { order: 1; }
+            #navbar .max-w-7xl > div:first-child > .flex.items-center.gap-3 { order: 2; }
+            #mobile-menu-toggle { order: 3; flex: 0 0 2.5rem; }
             #navbar .max-w-7xl > div > .flex.items-center.gap-3 { flex: 0 0 auto; gap: .35rem; }
             #navbar a[href="#cart"] { padding: .5rem .55rem; gap: .25rem; }
             #navbar a[href="#cart"] > span:not(#cart-count) { display: none; }
