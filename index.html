@@ -316,7 +316,7 @@
                     <a href="#home" class="text-dark hover:text-primary transition-colors font-medium">Beranda</a>
                     <a href="#catalog" class="text-dark hover:text-primary transition-colors font-medium">Koleksi Hijab</a>
                     <a href="#track-order" class="text-dark hover:text-primary transition-colors font-medium">Cek Pesanan</a>
-                    <a href="#support" class="text-dark hover:text-primary transition-colors font-medium">Pengaduan</a>
+                    <a href="#returns" class="text-dark hover:text-primary transition-colors font-medium">Retur</a>
                     <a href="#home" onclick="scrollToSection('tentang')" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Tentang Kami</a>
                     <a href="#home" onclick="scrollToSection('kontak')" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Kontak</a>
                 </div>
@@ -325,7 +325,7 @@
                 <div class="flex items-center gap-3 md:gap-4">
                     <a href="#catalog" class="text-graytext hover:text-primary transition-colors p-2" aria-label="Cari produk"><i class="ph ph-magnifying-glass text-xl"></i></a>
                     <a href="#track-order" class="text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Cek status pesanan"><i class="ph ph-package text-xl"></i><span class="hidden lg:inline ml-1">Lacak</span></a>
-                    <a href="#support" class="text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Buat atau cek pengaduan"><i class="ph ph-chat-circle-dots text-xl"></i><span class="hidden xl:inline ml-1">Pengaduan</span></a>
+                    <a href="#returns" class="text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Ajukan retur"><i class="ph ph-arrow-u-up-left text-xl"></i><span class="hidden xl:inline ml-1">Retur</span></a>
                     <a href="#cart" class="relative bg-primary hover:bg-primaryHover text-white px-4 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm font-medium text-sm">
                         <i class="ph ph-shopping-cart text-lg"></i><span>Keranjang</span>
                         <span id="cart-count" class="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-white text-primary text-xs font-bold">0</span>
@@ -359,7 +359,8 @@
                     <ul class="space-y-3 text-sm font-medium text-graytext">
                         <li><a href="#home" class="hover:text-primary transition-colors">Beranda</a></li>
                         <li><a href="#catalog" class="hover:text-primary transition-colors">Koleksi Hijab</a></li>
-                        <li><a href="#track-order" class="hover:text-primary transition-colors">Cek Status Pesanan</a></li>
+                        <li><a href="#track-order" class="hover:text-primary transition-colors">Lacak Pesanan</a></li>
+                        <li><a href="#returns" class="hover:text-primary transition-colors">Ajukan Retur</a></li>
                         <li><a href="#home" onclick="scrollToSection('tentang')" class="hover:text-primary transition-colors">Tentang Kami</a></li>
                         <li><a href="#kebijakan" class="hover:text-primary transition-colors">Kebijakan &amp; Retur</a></li>
                     </ul>
@@ -690,93 +691,6 @@
         </div>
     </template>
 
-
-    <!-- Template: Customer Support / Complaints -->
-    <template id="tpl-support">
-        <section class="bg-base min-h-[70vh] py-10 sm:py-14 px-4">
-            <div class="max-w-5xl mx-auto">
-                <div class="max-w-2xl mb-8">
-                    <p class="text-xs uppercase tracking-[0.2em] font-bold text-accent mb-2">Layanan pelanggan</p>
-                    <h1 class="font-heading text-3xl sm:text-4xl font-bold text-dark">Pengaduan & Pelaporan</h1>
-                    <p class="text-graytext mt-3 leading-relaxed">Sampaikan kendala terkait produk, pesanan, pengiriman, atau pembayaran. Kamu akan mendapat nomor tiket untuk memantau tindak lanjutnya.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
-                    <div class="lg:col-span-3 bg-white rounded-3xl border border-lightpink/70 shadow-sm overflow-hidden">
-                        <div class="px-5 sm:px-7 py-5 border-b border-lightpink/60 bg-white">
-                            <h2 class="font-heading text-xl font-bold text-dark">Buat pengaduan baru</h2>
-                            <p class="text-sm text-graytext mt-1">Isi detail yang diperlukan agar admin dapat membantu dengan tepat.</p>
-                        </div>
-                        <form id="support-submit-form" class="p-5 sm:p-7 space-y-4">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="support-name" class="block text-sm font-semibold text-dark mb-1.5">Nama lengkap *</label>
-                                    <input id="support-name" name="customer_name" required minlength="2" maxlength="120" autocomplete="name" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="Nama kamu">
-                                </div>
-                                <div>
-                                    <label for="support-phone" class="block text-sm font-semibold text-dark mb-1.5">Nomor HP/WhatsApp *</label>
-                                    <input id="support-phone" name="customer_phone" required minlength="8" maxlength="25" inputmode="tel" autocomplete="tel" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="08xxxxxxxxxx">
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="support-email" class="block text-sm font-semibold text-dark mb-1.5">Email (opsional)</label>
-                                    <input id="support-email" name="customer_email" type="email" maxlength="254" autocomplete="email" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="nama@email.com">
-                                </div>
-                                <div>
-                                    <label for="support-order" class="block text-sm font-semibold text-dark mb-1.5">Nomor pesanan (opsional)</label>
-                                    <input id="support-order" name="order_number" maxlength="80" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="Contoh: TA-20261028-...">
-                                </div>
-                            </div>
-                            <div>
-                                <label for="support-category" class="block text-sm font-semibold text-dark mb-1.5">Kategori pengaduan *</label>
-                                <select id="support-category" name="category" required class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15">
-                                    <option value="">Pilih kategori</option>
-                                    <option value="produk">Produk / kualitas barang</option>
-                                    <option value="pesanan">Pesanan / pembatalan</option>
-                                    <option value="pengiriman">Pengiriman / paket</option>
-                                    <option value="pembayaran">Pembayaran</option>
-                                    <option value="layanan">Pelayanan admin</option>
-                                    <option value="lainnya">Lainnya</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="support-reason" class="block text-sm font-semibold text-dark mb-1.5">Alasan utama *</label>
-                                <input id="support-reason" name="reason" required minlength="3" maxlength="160" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="Ringkas masalah yang kamu alami">
-                            </div>
-                            <div>
-                                <label for="support-details" class="block text-sm font-semibold text-dark mb-1.5">Keterangan tambahan *</label>
-                                <textarea id="support-details" name="details" required minlength="5" maxlength="2000" rows="5" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 resize-y" placeholder="Jelaskan kronologi, barang terkait, atau solusi yang kamu harapkan. Jangan masukkan PIN, kata sandi, atau OTP."></textarea>
-                                <p class="text-xs text-gray-500 mt-1.5">5–2.000 karakter. Sertakan nomor pesanan bila terkait transaksi.</p>
-                            </div>
-                            <div id="support-submit-error" class="hidden rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert"></div>
-                            <button id="support-submit-button" type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primaryHover px-5 py-3.5 text-sm font-bold text-white transition shadow-sm"><i class="ph ph-paper-plane-tilt text-lg"></i> Kirim Pengaduan</button>
-                            <div id="support-submit-result" class="hidden rounded-2xl border border-green-200 bg-green-50 p-4 sm:p-5" role="status" aria-live="polite"></div>
-                        </form>
-                    </div>
-
-                    <aside class="lg:col-span-2 space-y-5">
-                        <div class="bg-white rounded-3xl border border-lightpink/70 shadow-sm p-5 sm:p-6">
-                            <span class="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-lightpink text-primary"><i class="ph ph-magnifying-glass text-2xl"></i></span>
-                            <h2 class="font-heading text-xl font-bold text-dark mt-3">Cek status pengaduan</h2>
-                            <p class="text-sm text-graytext mt-1 mb-4 leading-relaxed">Gunakan nomor tiket dan nomor HP yang kamu daftarkan untuk melihat status serta catatan dari admin.</p>
-                            <form id="support-lookup-form" class="space-y-3">
-                                <div><label for="support-lookup-ticket" class="block text-sm font-semibold text-dark mb-1.5">Nomor tiket *</label><input id="support-lookup-ticket" required maxlength="30" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm uppercase focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="PGD-YYYYMMDD-XXXXXXXXXX"></div>
-                                <div><label for="support-lookup-phone" class="block text-sm font-semibold text-dark mb-1.5">Nomor HP saat laporan *</label><input id="support-lookup-phone" required minlength="8" maxlength="25" inputmode="tel" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" placeholder="08xxxxxxxxxx"></div>
-                                <div id="support-lookup-error" class="hidden rounded-xl bg-red-50 p-3 text-sm text-red-700" role="alert"></div>
-                                <button id="support-lookup-button" type="submit" class="w-full rounded-xl border border-primary text-primary hover:bg-lightpink px-5 py-3 text-sm font-bold transition">Periksa Status</button>
-                            </form>
-                            <div id="support-lookup-result" class="mt-4" aria-live="polite"></div>
-                        </div>
-                        <div class="rounded-2xl border border-primary/20 bg-white/70 p-5">
-                            <h3 class="font-bold text-dark flex items-center gap-2"><i class="ph ph-bell-ringing text-primary text-xl"></i> Informasi tindak lanjut</h3>
-                            <p class="text-sm text-graytext mt-2 leading-relaxed">Nomor tiket perlu disimpan. Admin akan memperbarui status di sistem. Jika laporan belum selesai setelah 7 hari, laporan ditandai untuk tindak lanjut mingguan di dashboard admin. Untuk balasan langsung, gunakan kontak WhatsApp pada footer.</p>
-                        </div>
-                    </aside>
-                </div>
-            </div>
-        </section>
-    </template>
 
     <!-- Template: Admin Login -->
     <template id="tpl-admin-login">
@@ -1361,8 +1275,8 @@ let supabaseClient = null;
                     renderCheckout(appContent);
                 } else if (baseHash === '#track-order') {
                     renderTrackOrder(appContent);
-                } else if (baseHash === '#support') {
-                    renderSupportPage(appContent);
+                } else if (baseHash === '#returns') {
+                    renderReturnPage(appContent);
                 } else if (baseHash === '#admin') {
                     const user = await checkAuth();
                     if (!user) {
@@ -1890,6 +1804,48 @@ async function loadProductReviews(productId) {
             return labels[status] || status || 'Belum tersedia';
         }
 
+        function renderReturnPage(container) {
+            const lastOrder = APP_STATE.lastOrder || {};
+            const lastPhone = APP_STATE.lastOrderPhone || '';
+            container.innerHTML = '<section class="bg-base min-h-[70vh] py-12 px-4"><div class="max-w-3xl mx-auto"><div class="mb-8"><p class="text-xs uppercase tracking-widest text-accent font-bold mb-2">Layanan pelanggan</p><h1 class="font-heading text-3xl sm:text-4xl font-bold text-dark">Ajukan Retur atau Penukaran</h1><p class="text-gray-600 mt-2">Masukkan nomor pesanan dan nomor HP yang digunakan saat checkout. Kami akan memeriksa data serta status penerimaan sebelum menampilkan formulir pengajuan.</p></div><form id="returns-lookup-form" class="bg-white border border-gray-100 rounded-2xl p-5 sm:p-6 grid sm:grid-cols-2 gap-4"><div><label for="returns-order-number" class="block text-sm font-bold mb-2">Nomor pesanan</label><input id="returns-order-number" required maxlength="80" value="' + escapeHTML(lastOrder.order_number || '') + '" placeholder="Nomor pesanan saat checkout" class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none"></div><div><label for="returns-order-phone-input" class="block text-sm font-bold mb-2">Nomor HP checkout</label><input id="returns-order-phone-input" required minlength="8" maxlength="25" value="' + escapeHTML(lastPhone) + '" placeholder="08xxxxxxxxxx" inputmode="tel" class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none"></div><div class="sm:col-span-2"><button id="returns-lookup-submit" type="submit" class="w-full sm:w-auto bg-primary hover:bg-primaryHover text-white px-7 py-3 rounded-xl font-bold"><i class="ph ph-shield-check mr-2"></i>Verifikasi Pesanan</button></div></form><div id="returns-lookup-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 mt-4 text-sm" role="alert"></div><div id="returns-lookup-result" class="mt-6"></div></div></section>';
+            document.getElementById('returns-lookup-form')?.addEventListener('submit', submitReturnLookup);
+        }
+
+        async function submitReturnLookup(event) {
+            event.preventDefault();
+            const button = document.getElementById('returns-lookup-submit');
+            const errorBox = document.getElementById('returns-lookup-error');
+            const resultBox = document.getElementById('returns-lookup-result');
+            const orderNumber = document.getElementById('returns-order-number')?.value.trim() || '';
+            const phone = document.getElementById('returns-order-phone-input')?.value.trim() || '';
+            if (!button || !errorBox || !resultBox) return;
+            button.disabled = true;
+            button.textContent = 'Memverifikasi…';
+            errorBox.classList.add('hidden');
+            resultBox.innerHTML = '<div class="bg-white border border-gray-100 rounded-2xl p-8 text-center"><div class="loader mx-auto"></div><p class="text-sm text-gray-500 mt-3">Memeriksa data pesanan…</p></div>';
+            try {
+                const response = await fetch(SUPABASE_URL + '/functions/v1/track-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+                    body: JSON.stringify({ order_number: orderNumber, phone })
+                });
+                const result = await response.json();
+                if (!response.ok || !result.ok || !result.order) throw new Error(result.error || 'Data pesanan tidak ditemukan. Periksa kembali nomor pesanan dan nomor HP checkout.');
+                const order = result.order;
+                resultBox.innerHTML = '<div class="rounded-2xl border border-lightpink bg-white p-4 sm:p-5"><p class="text-xs uppercase tracking-wider font-bold text-primary">Data pesanan terverifikasi</p><div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2"><div><h2 class="font-bold text-lg break-all">' + escapeHTML(order.order_number) + '</h2><p class="text-sm text-gray-600">' + escapeHTML(order.customer_name) + '</p></div><span class="inline-flex self-start rounded-full bg-lightpink px-3 py-1.5 text-xs font-bold">' + escapeHTML(orderStatusLabel(order.order_status)) + '</span></div><p class="text-sm text-gray-600 mt-3">Formulir pengajuan akan tersedia jika pesanan sudah tercatat diterima.</p></div>' + renderReturnRequestPanel(order);
+                document.getElementById('returns-order-phone').value = phone;
+                document.getElementById('return-request-form')?.addEventListener('submit', submitReturnRequest);
+                document.getElementById('return-request-type')?.addEventListener('change', toggleReturnProductField);
+            } catch (error) {
+                resultBox.innerHTML = '';
+                errorBox.textContent = error.message || 'Data pesanan tidak ditemukan. Periksa kembali nomor pesanan dan nomor HP checkout.';
+                errorBox.classList.remove('hidden');
+            } finally {
+                button.disabled = false;
+                button.innerHTML = '<i class="ph ph-shield-check mr-2"></i>Verifikasi Pesanan';
+            }
+        }
+
         function renderTrackOrder(container) {
             const lastOrder = APP_STATE.lastOrder || {};
             const lastPhone = APP_STATE.lastOrderPhone || '';
@@ -1951,7 +1907,8 @@ async function loadProductReviews(productId) {
                 : !delivered
                     ? '<div class="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 sm:p-5 text-sm text-amber-900" role="status"><p class="font-bold flex items-center gap-2"><i class="ph ph-clock text-xl"></i> Belum bisa mengajukan retur atau penukaran</p><p class="mt-2">Pesananmu belum tercatat diterima. Pengajuan retur atau penukaran baru bisa dilakukan setelah status pesanan menjadi <b>Selesai / diterima</b>.</p><p class="mt-2">Jika paket sebenarnya sudah sampai, silakan hubungi admin agar status pengiriman diperbarui terlebih dahulu.</p></div>'
                     : '<form id="return-request-form" class="mt-4 rounded-xl border border-gray-100 bg-white p-4 sm:p-5 space-y-4"><input type="hidden" id="return-request-order" value="' + escapeHTML(order.order_number) + '"><div><label for="return-request-type" class="block text-sm font-bold mb-2">Jenis pengajuan *</label><select id="return-request-type" required class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none"><option value="cancel">Batalkan pesanan</option><option value="exchange">Tukar produk / ukuran / warna</option><option value="return_refund">Retur / minta pengembalian dana</option></select></div><div><label for="return-request-reason" class="block text-sm font-bold mb-2">Alasan *</label><select id="return-request-reason" required class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none"><option value="">Pilih alasan</option><option>Berubah pikiran / tidak jadi membeli</option><option>Salah memilih produk</option><option>Ukuran atau warna tidak sesuai</option><option>Produk rusak atau cacat</option><option>Produk yang diterima tidak sesuai</option><option>Alasan lainnya</option></select></div><div id="return-request-product-wrap" class="hidden"><label for="return-request-product" class="block text-sm font-bold mb-2">Produk pengganti yang diinginkan *</label><input id="return-request-product" maxlength="300" class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none" placeholder="Contoh: hijab warna sage, ukuran ..."></div><div><label for="return-request-details" class="block text-sm font-bold mb-2">Detail permintaan *</label><textarea id="return-request-details" rows="3" required minlength="5" maxlength="1500" class="w-full border border-gray-200 rounded-xl p-3 focus:border-primary outline-none" placeholder="Jelaskan produk yang ingin diganti atau alasan pembatalan/retur."></textarea></div><div id="return-request-feedback" class="hidden rounded-xl p-3 text-sm" role="status" aria-live="polite"></div><button id="return-request-submit" type="submit" class="w-full sm:w-auto rounded-xl bg-primary px-5 py-3 font-bold text-white hover:bg-primaryHover"><i class="ph ph-paper-plane-tilt mr-2"></i>Kirim pengajuan</button></form>';
-            return '<section class="mt-6 rounded-2xl border border-lightpink bg-base p-4 sm:p-6"><div class="flex items-start gap-3"><span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-lightpink text-primary"><i class="ph ph-arrow-u-up-left text-2xl"></i></span><div><h3 class="font-heading text-xl font-bold text-dark">Retur, penukaran, atau pembatalan</h3><p class="text-sm text-gray-600 mt-1">Ajukan dari sini menggunakan nomor pesanan yang sudah terverifikasi.</p></div></div>' + history + form + '<p class="text-xs leading-relaxed text-gray-500 mt-4">Permintaan akan diperiksa admin. Pengajuan tidak otomatis membatalkan pesanan, menukar barang, atau memproses pengembalian dana.</p></section>';
+            const verifiedPhone = document.getElementById('returns-order-phone')?.value.trim() || document.getElementById('track-order-phone')?.value.trim() || '';
+            return '<section class="mt-6 rounded-2xl border border-lightpink bg-base p-4 sm:p-6"><input type="hidden" id="returns-order-phone" value="' + escapeHTML(verifiedPhone) + '"><div class="flex items-start gap-3"><span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-lightpink text-primary"><i class="ph ph-arrow-u-up-left text-2xl"></i></span><div><h3 class="font-heading text-xl font-bold text-dark">Retur, penukaran, atau pembatalan</h3><p class="text-sm text-gray-600 mt-1">Ajukan dari halaman retur setelah nomor pesanan dan HP checkout terverifikasi.</p></div></div>' + history + form + '<p class="text-xs leading-relaxed text-gray-500 mt-4">Permintaan akan diperiksa admin. Pengajuan tidak otomatis membatalkan pesanan, menukar barang, atau memproses pengembalian dana.</p></section>';
         }
 
         function toggleReturnProductField() {
@@ -1968,7 +1925,7 @@ async function loadProductReviews(productId) {
             const form = document.getElementById('return-request-form');
             const button = document.getElementById('return-request-submit');
             const feedback = document.getElementById('return-request-feedback');
-            const phone = document.getElementById('track-order-phone')?.value.trim() || '';
+            const phone = document.getElementById('returns-order-phone')?.value.trim() || document.getElementById('track-order-phone')?.value.trim() || '';
             if (!form || !button || !feedback) return;
             button.disabled = true;
             button.textContent = 'Mengirim pengajuan…';
@@ -1992,7 +1949,10 @@ async function loadProductReviews(productId) {
                 feedback.textContent = 'Pengajuan ' + result.request.request_number + ' berhasil dikirim. Admin akan meninjau permintaanmu. Memuat status terbaru…';
                 form.reset();
                 toggleReturnProductField();
-                setTimeout(() => document.getElementById('track-order-form')?.requestSubmit(), 900);
+                setTimeout(() => {
+                    if (window.location.hash.split('?')[0] === '#returns') document.getElementById('returns-lookup-form')?.requestSubmit();
+                    else document.getElementById('track-order-form')?.requestSubmit();
+                }, 900);
             } catch (error) {
                 feedback.className = 'rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700';
                 feedback.textContent = error.message || 'Pengajuan belum dapat dikirim. Coba lagi.';
