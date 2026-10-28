@@ -297,7 +297,24 @@
             }
         }
 
-    </style>
+            /* Compact mobile header with a menu toggle; desktop navigation remains unchanged. */
+        @media (max-width: 1023px) {
+            #navbar .max-w-7xl > div:first-child { display: flex; flex-wrap: nowrap; min-height: 4.5rem; height: auto; padding-top: .4rem; padding-bottom: .4rem; gap: .45rem; }
+            #navbar a.group[href="/"] { min-width: 0; flex: 1 1 auto; gap: .4rem; }
+            #navbar a.group[href="/"] > span:first-child { width: 2.25rem; height: 2.25rem; flex: 0 0 2.25rem; }
+            #navbar a.group[href="/"] > span:last-child { font-size: clamp(.95rem, 4vw, 1.25rem); line-height: 1.1; white-space: nowrap; }
+            #mobile-menu-toggle { flex: 0 0 2.5rem; }
+            #navbar .max-w-7xl > div > .flex.items-center.gap-3 { flex: 0 0 auto; gap: .35rem; }
+            #navbar a[href="#cart"] { padding: .5rem .55rem; gap: .25rem; }
+            #navbar a[href="#cart"] > span:not(#cart-count) { display: none; }
+            #navbar a[href="#admin"] { padding: .5rem .55rem; font-size: .6rem; }
+        }
+        @media (max-width: 380px) {
+            #navbar a.group[href="/"] > span:last-child { font-size: .95rem; }
+            #navbar .max-w-7xl > div > .flex.items-center.gap-3 { gap: .2rem; }
+            #navbar a[href="#admin"] { padding: .45rem; font-size: .55rem; }
+        }
+</style>
 </head>
 <body class="flex flex-col min-h-screen">
 
@@ -306,32 +323,48 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <!-- Logo -->
-                <a href="#home" class="flex items-center gap-2 text-primary group">
+                <a href="/" class="flex items-center gap-2 text-primary group">
                     <span class="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 shrink-0 overflow-hidden rounded-full bg-white border border-lightpink group-hover:scale-105 transition-transform"><img src="assets/logo-mark.webp?v=4" alt="Logo Toko Anggun" class="w-full h-full object-cover" decoding="async"></span>
                     <span class="font-heading font-bold text-2xl tracking-tight">Toko Anggun</span>
                 </a>
                 
                 <!-- Desktop Menu -->
                 <div class="hidden lg:flex space-x-6 xl:space-x-8">
-                    <a href="#home" class="text-dark hover:text-primary transition-colors font-medium">Beranda</a>
+                    <a href="/" class="text-dark hover:text-primary transition-colors font-medium">Beranda</a>
                     <a href="#catalog" class="text-dark hover:text-primary transition-colors font-medium">Koleksi Hijab</a>
                     <a href="#track-order" class="text-dark hover:text-primary transition-colors font-medium">Cek Pesanan</a>
                     <a href="#returns" class="text-dark hover:text-primary transition-colors font-medium">Retur / Refund</a>
-                    <a href="#home" onclick="scrollToSection('tentang')" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Tentang Kami</a>
-                    <a href="#home" onclick="scrollToSection('kontak')" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Kontak</a>
+                    <a href="/" onclick="scrollToSection('tentang'); return false;" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Tentang Kami</a>
+                    <a href="/" onclick="scrollToSection('kontak'); return false;" class="text-dark hover:text-primary transition-colors font-medium cursor-pointer">Kontak</a>
                 </div>
+
+                <!-- Mobile hamburger menu -->
+                <button id="mobile-menu-toggle" type="button" class="lg:hidden inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-xl border border-lightpink text-primary bg-white/80 hover:bg-lightpink/60 transition-colors" aria-label="Buka menu navigasi" aria-controls="mobile-menu" aria-expanded="false" onclick="toggleMobileMenu()">
+                    <i id="mobile-menu-icon" class="ph ph-list text-2xl"></i>
+                </button>
 
                 <!-- Right Actions -->
                 <div class="flex items-center gap-3 md:gap-4">
                     <a href="#catalog" class="text-graytext hover:text-primary transition-colors p-2" aria-label="Cari produk"><i class="ph ph-magnifying-glass text-xl"></i></a>
-                    <a href="#track-order" class="lg:hidden text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Lacak pesanan" title="Lacak pesanan"><i class="ph ph-package text-xl"></i><span class="hidden sm:inline ml-1">Lacak</span></a>
-                    <a href="#returns" class="lg:hidden text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Ajukan Retur / Refund" title="Ajukan Retur / Refund"><i class="ph ph-arrow-u-up-left text-xl"></i><span class="hidden sm:inline ml-1">Retur / Refund</span></a>
+                    <a href="#track-order" class="hidden text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Lacak pesanan" title="Lacak pesanan"><i class="ph ph-package text-xl"></i><span class="hidden sm:inline ml-1">Lacak</span></a>
+                    <a href="#returns" class="hidden text-graytext hover:text-primary transition-colors p-2 text-sm font-semibold" aria-label="Ajukan Retur / Refund" title="Ajukan Retur / Refund"><i class="ph ph-arrow-u-up-left text-xl"></i><span class="hidden sm:inline ml-1">Retur / Refund</span></a>
                     <a href="#cart" class="relative bg-primary hover:bg-primaryHover text-white px-4 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm font-medium text-sm">
                         <i class="ph ph-shopping-cart text-lg"></i><span>Keranjang</span>
                         <span id="cart-count" class="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-white text-primary text-xs font-bold">0</span>
                     </a>
                     <a href="#admin" onclick="navigateToAdmin(event)" class="bg-lightpink text-accent hover:bg-accent hover:text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide transition-colors">Admin</a>
                 </div>
+            </div>
+        </div>
+        <!-- Collapsible navigation for phones and small tablets -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-lightpink/60 bg-base/95 backdrop-blur-md shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col gap-1">
+                <a href="/" onclick="toggleMobileMenu(false)" class="mobile-nav-link rounded-xl px-4 py-3 text-dark hover:bg-lightpink/50 font-semibold">Beranda</a>
+                <a href="#catalog" onclick="toggleMobileMenu(false)" class="mobile-nav-link rounded-xl px-4 py-3 text-dark hover:bg-lightpink/50 font-semibold">Koleksi Hijab</a>
+                <a href="#track-order" onclick="toggleMobileMenu(false)" class="mobile-nav-link rounded-xl px-4 py-3 text-dark hover:bg-lightpink/50 font-semibold"><i class="ph ph-package mr-2"></i>Lacak Pesanan</a>
+                <a href="#returns" onclick="toggleMobileMenu(false)" class="mobile-nav-link rounded-xl px-4 py-3 text-dark hover:bg-lightpink/50 font-semibold"><i class="ph ph-arrow-u-up-left mr-2"></i>Retur / Refund</a>
+                <a href="/" onclick="toggleMobileMenu(false); scrollToSection('tentang'); return false;" class="mobile-nav-link rounded-xl px-4 py-3 text-dark hover:bg-lightpink/50 font-semibold">Tentang Kami</a>
+                <a href="/" onclick="toggleMobileMenu(false); scrollToSection('kontak'); return false;" class="mobile-nav-link rounded-xl px-4 py-3 text-dark hover:bg-lightpink/50 font-semibold">Kontak</a>
             </div>
         </div>
     </nav>
@@ -344,7 +377,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="kontak">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-9 lg:gap-10">
                 <div class="text-center sm:text-left">
-                    <a href="#home" class="inline-flex items-center justify-center sm:justify-start gap-3 text-primary mb-4">
+                    <a href="/" class="inline-flex items-center justify-center sm:justify-start gap-3 text-primary mb-4">
                         <span class="flex items-center justify-center w-11 h-11 shrink-0 overflow-hidden rounded-full bg-white border border-lightpink"><img src="assets/logo-mark.webp?v=4" alt="Logo Toko Anggun" class="w-full h-full object-cover" loading="lazy" decoding="async"></span>
                         <span class="font-heading font-bold text-xl">Toko Anggun</span>
                     </a>
@@ -357,11 +390,11 @@
                 <nav aria-label="Navigasi footer" class="text-center sm:text-left">
                     <h2 class="font-heading font-bold text-lg text-dark mb-4">Jelajahi Toko</h2>
                     <ul class="space-y-3 text-sm font-medium text-graytext">
-                        <li><a href="#home" class="hover:text-primary transition-colors">Beranda</a></li>
+                        <li><a href="/" class="hover:text-primary transition-colors">Beranda</a></li>
                         <li><a href="#catalog" class="hover:text-primary transition-colors">Koleksi Hijab</a></li>
                         <li><a href="#track-order" class="hover:text-primary transition-colors">Lacak Pesanan</a></li>
                         <li><a href="#returns" class="hover:text-primary transition-colors">Ajukan Retur / Refund</a></li>
-                        <li><a href="#home" onclick="scrollToSection('tentang')" class="hover:text-primary transition-colors">Tentang Kami</a></li>
+                        <li><a href="/" onclick="scrollToSection('tentang')" class="hover:text-primary transition-colors">Tentang Kami</a></li>
                         <li><a href="#kebijakan" class="hover:text-primary transition-colors">Kebijakan Retur &amp; Refund</a></li>
                     </ul>
                 </nav>
@@ -657,7 +690,7 @@
                 <!-- Breadcrumbs -->
                 <nav class="flex text-sm text-gray-500 mb-8" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-2">
-                        <li><a href="#home" class="hover:text-primary transition-colors">Beranda</a></li>
+                        <li><a href="/" class="hover:text-primary transition-colors">Beranda</a></li>
                         <li><i class="ph-bold ph-caret-right text-xs"></i></li>
                         <li><a href="#catalog" class="hover:text-primary transition-colors">Koleksi</a></li>
                         <li><i class="ph-bold ph-caret-right text-xs"></i></li>
@@ -731,7 +764,7 @@
                     </div>
                 </div>
                 <div class="mt-6 text-center border-t border-gray-100 pt-6">
-                    <a href="#home" class="text-sm text-gray-500 hover:text-primary transition flex items-center justify-center gap-1 font-medium">
+                    <a href="/" class="text-sm text-gray-500 hover:text-primary transition flex items-center justify-center gap-1 font-medium">
                         <i class="ph-bold ph-arrow-left"></i> Kembali ke Website
                     </a>
                 </div>
@@ -764,7 +797,7 @@
                     <button type="button" onclick="toggleAdminSettings(event)" aria-controls="settings-body" class="w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-gear text-xl"></i> Pengaturan Web</button>
                     
                     <p class="px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2 mt-8">Tautan Cepat</p>
-                    <a href="#home" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-arrow-square-out text-xl"></i> Lihat Website</a>
+                    <a href="/" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition font-medium"><i class="ph-bold ph-arrow-square-out text-xl"></i> Lihat Website</a>
                 </nav>
                 <div class="p-5 border-t border-white/10 bg-primaryHover">
                     <div class="flex items-center gap-3 px-2 py-2 mb-4">
@@ -1112,23 +1145,31 @@ let supabaseClient = null;
         const generateFallbackImage = (name) => `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'Produk')}&background=F7E4E5&color=526D52&size=600&font-size=0.33`;
 
         const scrollToSection = (id) => {
-            if(window.location.hash !== '#home' && window.location.hash !== '') {
-                window.location.hash = '#home';
-                setTimeout(() => {
-                    const el = document.getElementById(id);
-                    if(el) {
-                        const navHeight = document.getElementById('navbar').offsetHeight;
-                        window.scrollTo({ top: el.offsetTop - navHeight - 20, behavior: 'smooth' });
-                    }
-                }, 150); // slight delay to ensure DOM is ready
-            } else {
+            const scrollWhenReady = () => {
                 const el = document.getElementById(id);
-                if(el) {
-                    const navHeight = document.getElementById('navbar').offsetHeight;
-                    window.scrollTo({ top: el.offsetTop - navHeight - 20, behavior: 'smooth' });
-                }
+                if (!el) return;
+                const navHeight = document.getElementById('navbar')?.offsetHeight || 0;
+                window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - navHeight - 20, behavior: 'smooth' });
+            };
+            if (window.location.hash !== '#home' && window.location.hash !== '') {
+                window.history.replaceState({}, '', window.location.pathname + window.location.search);
+                router().then(() => setTimeout(scrollWhenReady, 180));
+            } else {
+                scrollWhenReady();
             }
         };
+
+        function toggleMobileMenu(forceOpen) {
+            const menu = document.getElementById('mobile-menu');
+            const button = document.getElementById('mobile-menu-toggle');
+            const icon = document.getElementById('mobile-menu-icon');
+            if (!menu || !button || !icon) return;
+            const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : menu.classList.contains('hidden');
+            menu.classList.toggle('hidden', !shouldOpen);
+            button.setAttribute('aria-expanded', String(shouldOpen));
+            button.setAttribute('aria-label', shouldOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi');
+            icon.className = shouldOpen ? 'ph ph-x text-2xl' : 'ph ph-list text-2xl';
+        }
 
         const openWhatsApp = (customMsg = null) => {
             const msg = customMsg || APP_STATE.settings.default_wa_message || 'Halo Toko Anggun, saya ingin bertanya mengenai layanan/produk Anda.';
@@ -2073,7 +2114,7 @@ async function loadProductReviews(productId) {
                 paymentContent = '<p class="text-sm text-gray-600 mt-4">Membuka halaman pembayaran aman…</p>';
             }
 
-            container.innerHTML = '<section class="bg-base min-h-[70vh] py-12 px-4"><div class="max-w-2xl mx-auto bg-white rounded-3xl border border-gray-100 p-6 sm:p-10 text-center"><div class="w-16 h-16 rounded-full bg-green-50 text-green-700 flex items-center justify-center mx-auto"><i class="ph ph-check-circle text-4xl"></i></div><h1 class="font-heading text-3xl font-bold mt-5">Pesanan berhasil dibuat</h1><p class="text-gray-500 mt-2">Simpan nomor pesanan berikut untuk referensi.</p><div class="bg-base rounded-xl p-4 mt-5"><p class="text-xs text-gray-500">Nomor pesanan</p><p class="text-xl font-bold text-primary mt-1 break-all">' + escapeHTML(result.order_number || '-') + '</p><p class="text-xs text-gray-500 mt-3">' + totalLabel + '</p><p class="text-lg font-bold mt-1">' + formatRupiah(result.total || 0) + '</p></div>' + paymentContent + '<p class="text-sm text-gray-500 mt-5">Jika ada kendala, simpan nomor pesanan dan bukti pembayaran untuk pengecekan admin.</p><div class="flex flex-col sm:flex-row gap-3 mt-6"><a href="#track-order" class="flex-1 bg-primary text-white rounded-xl p-3 font-bold">Cek Status Pesanan</a><a href="#catalog" class="flex-1 border border-gray-200 rounded-xl p-3 font-bold">Lanjut Belanja</a><a href="#home" class="flex-1 border border-gray-200 rounded-xl p-3 font-bold">Beranda</a></div></div></section>';
+            container.innerHTML = '<section class="bg-base min-h-[70vh] py-12 px-4"><div class="max-w-2xl mx-auto bg-white rounded-3xl border border-gray-100 p-6 sm:p-10 text-center"><div class="w-16 h-16 rounded-full bg-green-50 text-green-700 flex items-center justify-center mx-auto"><i class="ph ph-check-circle text-4xl"></i></div><h1 class="font-heading text-3xl font-bold mt-5">Pesanan berhasil dibuat</h1><p class="text-gray-500 mt-2">Simpan nomor pesanan berikut untuk referensi.</p><div class="bg-base rounded-xl p-4 mt-5"><p class="text-xs text-gray-500">Nomor pesanan</p><p class="text-xl font-bold text-primary mt-1 break-all">' + escapeHTML(result.order_number || '-') + '</p><p class="text-xs text-gray-500 mt-3">' + totalLabel + '</p><p class="text-lg font-bold mt-1">' + formatRupiah(result.total || 0) + '</p></div>' + paymentContent + '<p class="text-sm text-gray-500 mt-5">Jika ada kendala, simpan nomor pesanan dan bukti pembayaran untuk pengecekan admin.</p><div class="flex flex-col sm:flex-row gap-3 mt-6"><a href="#track-order" class="flex-1 bg-primary text-white rounded-xl p-3 font-bold">Cek Status Pesanan</a><a href="#catalog" class="flex-1 border border-gray-200 rounded-xl p-3 font-bold">Lanjut Belanja</a><a href="/" class="flex-1 border border-gray-200 rounded-xl p-3 font-bold">Beranda</a></div></div></section>';
         }
 
         // Customer support and complaint ticket workflow.
