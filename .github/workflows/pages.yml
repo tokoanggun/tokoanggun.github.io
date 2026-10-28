@@ -29,6 +29,13 @@ jobs:
         with:
           token: ${{ github.token }}
 
+      - name: Assemble homepage hero image
+        run: |
+          cat source-image-parts/home-hero-*.b64 | tr -d '\r\n ' | base64 --decode > assets/home-hero.webp
+          file assets/home-hero.webp
+          test "$(head -c 4 assets/home-hero.webp)" = "RIFF"
+          test "$(wc -c < assets/home-hero.webp)" -gt 1000
+
       - name: Prepare public site
         run: |
           mkdir -p _site
